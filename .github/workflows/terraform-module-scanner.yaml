@@ -91,7 +91,7 @@ jobs:
 ##############################################################
 # Lint Terraform configurations using TFLint
 ##############################################################
-  tflint:
+tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
     needs: [terraform-fmt-validate] # Ensure it runs after your other Terraform steps
@@ -103,11 +103,23 @@ jobs:
       with:
         ref: main
   
+    # Cache TFLint plugins
+    - uses: actions/cache@v3
+      with:
+        path: ~/.tflint.d/plugins
+        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
     # Install TFLint
     - name: Setup TFLint
       uses: terraform-linters/setup-tflint@v3
       with:
         tflint_version: v0.44.1
+
+    # Initialize TFLint plugins
+    - name: Init TFLint
+      run: tflint --init
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Run TFLint
     - name: Run TFLint
