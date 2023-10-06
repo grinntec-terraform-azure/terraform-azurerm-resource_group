@@ -106,7 +106,7 @@ jobs:
         output_format: cli
         output_file_path: ./checkov-security-scan
         soft_fail: 'true'
-        skip_check: ''
+        skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         compact: 'true'
 
   # Add the Checkov scan report to the repository and commit it with a commit message.
