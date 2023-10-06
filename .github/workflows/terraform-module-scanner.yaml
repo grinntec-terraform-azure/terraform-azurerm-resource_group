@@ -1,3 +1,15 @@
+# TERRAFORM MODULE SCANNER
+# Version: 1.0.0
+# Date: 2023-10-05
+# Author: Neil Grinnall
+#
+# A GitHub Action for Terraform Modules
+# - Runs 'terraform fmt'
+# - Runs 'terraform validate'
+# - Checks Code using TFLInt
+# - Scans for security issues using CHECKOV
+# - Creates/updates README.md using Terraform Docs
+
 name: 'Terraform Module Scanner'
 
 on:
@@ -11,16 +23,15 @@ on:
 
 jobs:
 
-##############################################################
+
 # TERRAFORM FMT & VALIDATE
-##############################################################
 # Set up the Terraform environment on the runner machine and
 # validate the Terraform code to ensure that it is ready for 
 # further deployment or management of infrastructure resources
 #
 # If the terraform validate command fails, subsequent steps in
 # the workflow will not execute.
-##############################################################
+
   terraform-fmt-validate:
     name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
@@ -72,11 +83,8 @@ jobs:
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
 
-##############################################################
 # TFLint
-##############################################################
 # Lint Terraform configurations using TFLint
-##############################################################
 tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
@@ -111,12 +119,11 @@ tflint:
     - name: Run TFLint
       run: tflint -f compact
 
-##############################################################
+
 # CHECKOV SECURITY SCAN
-##############################################################
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
-##############################################################
+
   checkov-security-scan:
     name: 'Checkov Security Scan'
     runs-on: ubuntu-latest
@@ -170,13 +177,12 @@ tflint:
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
 
-##############################################################
+
 # TERRAFORM-DOCS
-##############################################################
 # Automatically generate and update documentation for Terraform
 # modules in the README.md file, and push the changes back to 
 # the pull request branch in GitHub.
-##############################################################
+
   terraform-docs:
     name: 'Terraform Docs'
     runs-on: ubuntu-latest
