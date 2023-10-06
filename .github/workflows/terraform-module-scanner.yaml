@@ -1,3 +1,17 @@
+##############################################################
+# TERRAFORM MODULE SCANNER
+# Version: 1.0.0
+# Date: 2023-10-05
+# Author: Neil Grinnall
+#
+# A GitHub Action for Terraform Modules
+# - Runs 'terraform fmt'
+# - Runs 'terraform validate'
+# - Checks Code using TFLInt
+# - Scans for security issues using CHECKOV
+# - Creates/updates README.md using Terraform Docs
+##############################################################
+
 name: 'Terraform Module Scanner'
 
 on:
@@ -12,7 +26,7 @@ on:
 jobs:
 
 ##############################################################
-# TERRAFORM VALIDATE
+# TERRAFORM FMT & VALIDATE
 ##############################################################
 # Set up the Terraform environment on the runner machine and
 # validate the Terraform code to ensure that it is ready for 
@@ -21,8 +35,8 @@ jobs:
 # If the terraform validate command fails, subsequent steps in
 # the workflow will not execute.
 ##############################################################
-  terraform-validate:
-    name: 'Terraform Validate'
+  terraform-fmt-validate:
+    name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
     
     env:
@@ -60,7 +74,7 @@ jobs:
       with:
         add: '.'
         author_name: 'Neil Grinnall'
-        message: 'Resuling from Terraform init, fmt, & validate'    
+        message: 'Resulting from Terraform init, fmt, & validate'    
 
   # Push changes to the main branch.
   # Requires authentication, which is provided through a GITHUB_TOKEN 
@@ -80,7 +94,7 @@ jobs:
   tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
-    needs: [terraform-validate] # Ensure it runs after your other Terraform steps
+    needs: [terraform-fmt-validate] # Ensure it runs after your other Terraform steps
     
     steps:
     # Check out the code to the runner environment where the workflow is running
