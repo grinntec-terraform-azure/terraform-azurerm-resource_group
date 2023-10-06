@@ -118,6 +118,11 @@ jobs:
     - name: Create tflint directory if it doesn't exist
       run: mkdir -p tflint
 
+    # Run TFLint without redirecting output to see any error messages
+    - name: Run TFLint for diagnostics
+      run: |
+        tflint -f compact
+
     # Run TFLint and save results to a date-stamped file in the tflint/ directory
     - name: Run TFLint and save results
       run: |
