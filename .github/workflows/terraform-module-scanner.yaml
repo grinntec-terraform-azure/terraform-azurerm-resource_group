@@ -114,18 +114,21 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Run TFLint and save results to a file
+    # Run TFLint and save results to a date-stamped file in the tflint/ directory
     - name: Run TFLint and save results
-      run: tflint -f compact > tflint-results.txt
+      run: |
+        TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
+        tflint -f compact > tflint/tflint-results-$TIMESTAMP.txt
       working-directory: tflint
 
     # Commit the TFLint results to the repository
     - name: Commit TFLint results to the repository
       uses: EndBug/add-and-commit@v9.1.1
       with:
-        add: './tflint/tflint-results.txt'
-        author_name: 'Neil Grinnall'
+        add: './tflint/tflint-results-*.txt'
+        author_name: 'terraform-module-scanner'
         message: 'TFLint results'
+
 
 # CHECKOV SECURITY SCAN
 # Run a security scan on the Terraform code using the Checkov tool.
