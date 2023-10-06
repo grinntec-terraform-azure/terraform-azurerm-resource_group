@@ -12,6 +12,8 @@ on:
 jobs:
 
 ##############################################################
+# TERRAFORM VALIDATE
+##############################################################
 # Set up the Terraform environment on the runner machine and
 # validate the Terraform code to ensure that it is ready for 
 # further deployment or management of infrastructure resources
@@ -71,6 +73,8 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 ##############################################################
+# TFLint
+##############################################################
 # Lint Terraform configurations using TFLint
 ##############################################################
   tflint:
@@ -86,16 +90,17 @@ jobs:
         ref: main
   
     # Install TFLint
-    - name: Install TFLint
-      uses: reviewdog/action-tflint@v1
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        reporter: github-pr-review # This will add TFLint comments to PRs
+        tflint_version: v0.44.1
 
     # Run TFLint
     - name: Run TFLint
-      run: tflint
+      run: tflint -f compact
 
+##############################################################
+# CHECKOV SECURITY SCAN
 ##############################################################
 # Run a security scan on Terraform code using the Checkov tool.
 # Commit the results to the repository.
@@ -153,6 +158,8 @@ jobs:
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
 
+##############################################################
+# TERRAFORM-DOCS
 ##############################################################
 # Automatically generate and update documentation for Terraform
 # modules in the README.md file, and push the changes back to 
