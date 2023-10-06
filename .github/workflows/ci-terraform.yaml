@@ -1,4 +1,4 @@
-name: 'CI: Terraform lint, security check, readme, & version'
+name: 'Terraform Module Scanner'
 
 on:
   pull_request:
