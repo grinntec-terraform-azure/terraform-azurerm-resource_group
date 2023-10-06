@@ -41,7 +41,7 @@ jobs:
         
   # Install Terraform CLI on the runner machine
     - name: Setup Terraform on the runner
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2.0.3
 
   # Initializes the Terraform working directory by downloading the required provider plugins and modules.
   # Configures the backend to store the Terraform state.
