@@ -1,4 +1,4 @@
-##############################################################
+# ##############################################################
 # TERRAFORM MODULE SCANNER
 # Version: 1.0.0
 # Date: 2023-10-05
@@ -10,7 +10,7 @@
 # - Checks Code using TFLInt
 # - Scans for security issues using CHECKOV
 # - Creates/updates README.md using Terraform Docs
-##############################################################
+# ##############################################################
 
 name: 'Terraform Module Scanner'
 
