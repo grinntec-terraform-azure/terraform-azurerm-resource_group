@@ -1,20 +1,50 @@
+############################################################
+# PROVIDER CONFIGURATION
+############################################################
 # Provider configuration in the root module
 provider "azurerm" {
+  
+  # Specify specific parts of the target environment if not configured as environment variables
+    #subscription_id = "your-subscription-id" // The target Azure subscription
+    #client_id = "your-client-id" // Avoid hard-coding security credentials
+    #client_secret = "your-client-secret" // Avoid hard-coding security credentials
+    #tenant_id = "your-tenant-id" // The Azure AD tenant
+    
+  # Features block is required for azurerm provider
   features {}
-  # You can also specify other provider configurations like `subscription_id`, `client_id`, etc.
 }
 
-# Create the resource
+
+############################################################
+# TERRAFORM CONFIGURATION
+############################################################
+# Backend configuration for remote state in Azure Blob Storage
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "terraform-state"
+    storage_account_name  = "tfstateaccountsandbox"
+    container_name        = "tfstatecontainer"
+    key                   = "main.terraform.tfstate"
+  }
+}
+
+
+############################################################
+# RESOURCE
+############################################################
 module "azure_resource_group" {
-  source = "./path_to_your_module_directory"  # Adjust this path to where your module is located
+  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" # Adjust this path to where your module is located
 
   # Provide values for the module's variables
-  app_name   = "myapp"
+  app_name    = "myapp"
   environment = "dev"
-  location   = "westeurope"
+  location    = "westeurope"
 }
 
-# Outputs from the module
+
+############################################################
+# OUTPUTS
+############################################################
 output "resource_group_name" {
   description = "The name of the resource group created by the module"
   value       = module.azure_resource_group.resource_group_name
