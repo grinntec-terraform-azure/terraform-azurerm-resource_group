@@ -128,7 +128,7 @@ tflint:
 ##############################################################
 # CHECKOV SECURITY SCAN
 ##############################################################
-# Run a security scan on Terraform code using the Checkov tool.
+# Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 ##############################################################
   checkov-security-scan:
@@ -153,7 +153,7 @@ tflint:
       run: |
         git pull origin main
 
-  # Run a security scan on Terraform code using the Checkov tool.
+  # Run a security scan on the Terraform code using the Checkov tool.
   # Generate a report of security issues that were found.
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
