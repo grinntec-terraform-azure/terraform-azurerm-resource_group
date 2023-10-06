@@ -7,16 +7,16 @@
 #
 # The Azure provider version should be at least 3.0.
 # This allows any minor or patch version above 3.0 but below 4.0.
-terraform {
-  required_version = ">= 1.0"
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
-    }
-  }
-}
+#terraform {
+#  required_version = ">= 1.0"
+#
+#  required_providers {
+#    azurerm = {
+#      source  = "hashicorp/azurerm"
+#      version = "~> 3.0"
+#    }
+#  }
+#}
 
 
 ############################################################
