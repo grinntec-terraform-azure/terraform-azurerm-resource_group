@@ -84,40 +84,47 @@ jobs:
 
 # TFLint
 # Lint Terraform configurations using TFLint
-  tflint:
-    name: 'TFLint'
-    runs-on: ubuntu-latest
-    needs: [terraform-fmt-validate] # Ensure it runs after your other Terraform steps
-    
-    steps:
-    # Check out the code to the runner environment where the workflow is running
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-      with:
-        ref: main
+tflint:
+  name: 'TFLint'
+  runs-on: ubuntu-latest
+  needs: [terraform-fmt-validate] # Ensure it runs after your other Terraform steps
   
-    # Cache TFLint plugins
-    - uses: actions/cache@v3
-      with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+  steps:
+  # Check out the code to the runner environment where the workflow is running
+  - name: Checkout the repository
+    uses: actions/checkout@v3
+    with:
+      ref: main
 
-    # Install TFLint
-    - name: Setup TFLint
-      uses: terraform-linters/setup-tflint@v3
-      with:
-        tflint_version: v0.44.1
+  # Cache TFLint plugins
+  - uses: actions/cache@v3
+    with:
+      path: ~/.tflint.d/plugins
+      key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
-    # Initialize TFLint plugins
-    - name: Init TFLint
-      run: tflint --init
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Install TFLint
+  - name: Setup TFLint
+    uses: terraform-linters/setup-tflint@v3
+    with:
+      tflint_version: v0.44.1
 
-    # Run TFLint
-    - name: Run TFLint
-      run: tflint -f compact
+  # Initialize TFLint plugins
+  - name: Init TFLint
+    run: tflint --init
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # Run TFLint and save results to a file
+  - name: Run TFLint and save results
+    run: tflint -f compact > tflint-results.txt
+
+  # Commit the TFLint results to the repository
+  - name: Commit TFLint results to the repository
+    uses: EndBug/add-and-commit@v9.1.1
+    with:
+      add: './tflint-results.txt'
+      author_name: 'Neil Grinnall'
+      message: 'TFLint results'
 
 # CHECKOV SECURITY SCAN
 # Run a security scan on the Terraform code using the Checkov tool.
