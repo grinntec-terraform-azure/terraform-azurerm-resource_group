@@ -129,8 +129,6 @@ jobs:
         TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
         tflint -f compact > tflint/tflint-results-$TIMESTAMP.txt
 
-
-
   # Commit the TFLint results to the repository
     - name: Commit TFLint results to the repository
       uses: EndBug/add-and-commit@v9.1.1
