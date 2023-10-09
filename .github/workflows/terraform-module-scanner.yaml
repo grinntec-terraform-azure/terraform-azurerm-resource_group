@@ -167,6 +167,10 @@ jobs:
     - name: Create checkov directory if it doesn't exist
       run: mkdir -p checkov
 
+  # Generate the timestamped file path for the Checkov scan results
+    - name: Generate Checkov output file path
+      run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S").txt" >> $GITHUB_ENV
+
   # Run a security scan on the Terraform code using the Checkov tool.
   # Generate a report of security issues that were found.
     - name: Run Checkov Scan
@@ -175,7 +179,7 @@ jobs:
         directory: ./
         framework: terraform
         output_format: cli
-        output_file_path: ./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S").txt
+        output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
         soft_fail: 'true'
         skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         compact: 'true'
@@ -197,6 +201,7 @@ jobs:
         branch: main
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
+
 
 # TERRAFORM-DOCS
 # Automatically generate and update documentation for Terraform
@@ -222,7 +227,7 @@ jobs:
         git pull origin main
 
   # Render terraform docs inside the README.md and push changes back to PR branch
-    - name: Create or update readm.md file
+    - name: Create or update readme.md file
       uses: terraform-docs/gh-actions@v1.0.0
       with:
         working-dir: .
