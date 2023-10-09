@@ -1,8 +1,8 @@
-formatter: "markdown"
+formatter: "markdown doc"
 
 output:
-  file: "README.md"
-  mode: replace
+  file: "README.md"           # Create README.md in the root
+  mode: replace               # Completely replace the output-file with generated output
 
 settings:
   color: true

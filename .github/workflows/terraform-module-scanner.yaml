@@ -232,8 +232,5 @@ jobs:
       with:
         #config-file: .terraform-docs.yml
         config-file: ./terraform-docs/terraform-docs.yml
-        #working-dir: .
-        #output-file: README.md
-        #output-method: inject
         git-push: "true"
   
