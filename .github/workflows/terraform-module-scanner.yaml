@@ -230,8 +230,9 @@ jobs:
     - name: Create or update readme.md file
       uses: terraform-docs/gh-actions@v1.0.0
       with:
-        working-dir: .
-        output-file: README.md
-        output-method: inject
+        config-file: ./terraform-docs/terraform-docs.yml
+        #working-dir: .
+        #output-file: README.md
+        #output-method: inject
         git-push: "true"
   
