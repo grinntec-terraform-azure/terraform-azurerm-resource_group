@@ -121,8 +121,13 @@ jobs:
     # Run TFLint and save results to a date-stamped file in the tflint/ directory
     - name: Run TFLint and save results
       run: |
+        # Run tflint without redirection to see any error messages
+        tflint -f compact
+
+        # If the above command succeeds, then save the results to a file
         TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
         tflint -f compact > tflint/tflint-results-$TIMESTAMP.txt
+
 
   # Commit the TFLint results to the repository
     - name: Commit TFLint results to the repository
