@@ -1,4 +1,4 @@
-formatter: "markdown doc"
+formatter: "md doc"
 
 output:
   file: "README.md"           # Create README.md in the root
