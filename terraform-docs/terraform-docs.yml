@@ -1,17 +1,19 @@
-formatter: "md doc"
+formatter: "markdown doc"     # Format as Markdown document.
 
 output:
-  file: "README.md"           # Create README.md in the root
-  mode: replace               # Completely replace the output-file with generated output
+  file: "README.md"           # Create README.md in the root.
+  mode: replace               # Completely replace the output-file with generated output.
 
 settings:
-  color: true
-  description: "true"
-  hide-empty: true
-  read-comments: true
-  sensitive: true
+  color: false                # Print colorized version of result in the terminal.
+  description: "true"         # Show “Descriptions” as comment on variables.
+  hide-empty: true            # Hide empty sections.
+  read-comments: true         # Use comments from tf files for “Description” column (for inputs and outputs) when description is empty.
+  required: true              # Show “Required” as column (in table format) or section (in document format).
+  sensitive: true             # Show “Sensitive” as column (in table format) or section (in document format).
+  type: true                  # Show “Type” as column (in table format) or section (in document format).
   lockfile: true
 
 sort:
-  enabled: true
-  by: required
+  enabled: true               # Sort the document
+  by: required                # By the required fields
