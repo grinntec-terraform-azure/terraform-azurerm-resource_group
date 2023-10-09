@@ -217,7 +217,7 @@ jobs:
   terraform-docs:
     name: 'Terraform Docs'
     runs-on: ubuntu-latest
-    #needs: checkov-security-scan
+    needs: checkov-security-scan
     
     steps:
     
