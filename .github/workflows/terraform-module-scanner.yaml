@@ -169,7 +169,7 @@ jobs:
 
   # Generate the timestamped file path for the Checkov scan results
     - name: Generate Checkov output file path
-      run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S").txt" >> $GITHUB_ENV
+      run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
 
   # Run a security scan on the Terraform code using the Checkov tool.
   # Generate a report of security issues that were found.
