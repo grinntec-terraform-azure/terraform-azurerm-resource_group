@@ -163,6 +163,10 @@ jobs:
       run: |
         git pull origin main
 
+  # Ensure the checkov/ directory exists
+    - name: Create checkov directory if it doesn't exist
+      run: mkdir -p checkov
+
   # Run a security scan on the Terraform code using the Checkov tool.
   # Generate a report of security issues that were found.
     - name: Run Checkov Scan
@@ -171,7 +175,7 @@ jobs:
         directory: ./
         framework: terraform
         output_format: cli
-        output_file_path: ./checkov-security-scan
+        output_file_path: ./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S").txt
         soft_fail: 'true'
         skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         compact: 'true'
@@ -181,7 +185,7 @@ jobs:
     - name: Commit the results to this repository
       uses: EndBug/add-and-commit@v9.1.1
       with:
-        add: './checkov-security-scan'
+        add: './checkov/checkov-security-scan-*.txt'
         author_name: 'Neil Grinnall'
         message: 'Checkov results'
 
@@ -193,7 +197,6 @@ jobs:
         branch: main
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
-
 
 # TERRAFORM-DOCS
 # Automatically generate and update documentation for Terraform
