@@ -75,7 +75,20 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
         payload: |
           {
-            "text": "Error in 'Terraform FMT & Validate' step of ${{ github.workflow }} workflow in ${{ github.repository }}. Check the GitHub Action logs for detailed results."
+            "text": "Error in 'Terraform FMT & Validate' step of ${{ github.workflow }} workflow in ${{ github.repository }}. \nCheck the GitHub Action logs for detailed results."
+          },
+          {
+            "type": "actions",
+            "elements": [
+              {
+                "type": "button",
+                "text": {
+                  "type": "plain_text",
+                  "text": ":github: View Action"
+                },
+                "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              ]
           }
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
