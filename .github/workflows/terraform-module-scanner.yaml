@@ -93,13 +93,13 @@ jobs:
                       "type": "plain_text",
                       "text": ":github: View Action"
                     },
-                    "url": "https://github.com/grinntec-terraform-azure/terraform-azurerm-resource_group/actions/runs/6473426760"
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 ]
               }
             ]
           }
-          env:
+      env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       
