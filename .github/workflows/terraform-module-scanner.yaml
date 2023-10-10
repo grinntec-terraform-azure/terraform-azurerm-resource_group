@@ -20,6 +20,9 @@ on:
     paths-ignore:
       - '.github/workflows/**'
 
+env:
+  SLACK_CHANNEL_ID: 'C060E5R85BP' # Define the Slack channel ID here
+
 jobs:
 
 ### ------------------------------------------ ###
@@ -64,6 +67,18 @@ jobs:
   # Runs validate to check the code for syntax errors
     - name: Terraform init, fmt, & validate
       run: terraform init -backend=false; terraform fmt; terraform validate
+
+    - name: Notify Slack for Terraform FMT & Validate Failure
+      if: failure()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
+        payload: |
+          {
+            "text": "Error in 'Terraform FMT & Validate' step of ${{ github.workflow }} workflow in ${{ github.repository }}. Check the GitHub Action logs for detailed results."
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
