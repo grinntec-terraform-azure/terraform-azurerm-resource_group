@@ -265,7 +265,7 @@ jobs:
       # https://api.slack.com/apps/<your-app-id>/incoming-webhooks
       if: ${{ success() }}
       with:
-          channel-id: 'C060DK2BWQM' # slack channel #alerts-test
+          channel-id: 'C060E5R85BP' # slack channel #alerts-test
           payload: |
             {
               "text": "GitHub Action succeeded",
