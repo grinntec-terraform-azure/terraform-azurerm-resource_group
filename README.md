@@ -1,6 +1,6 @@
 # terraform-azurerm-resource_group
 
-![Latest Tag](https://img.shields.io/badge/Tag-PLACEHOLDER-blue)
+![Latest Tag](https://img.shields.io/badge/Tag--blue)
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
