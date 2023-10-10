@@ -1,6 +1,7 @@
 name: Update README tag
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - '*'
