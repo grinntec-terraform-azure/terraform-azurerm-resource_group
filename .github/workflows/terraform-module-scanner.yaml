@@ -56,6 +56,16 @@ jobs:
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
 
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
   # Initializes the Terraform working directory by downloading the required provider plugins and modules.
   # Configures the backend to store the Terraform state.
   # The -backend=false option disables the backend configuration and instructs Terraform to use a local backend.
