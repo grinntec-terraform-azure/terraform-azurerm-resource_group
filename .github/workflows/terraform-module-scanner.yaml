@@ -243,6 +243,12 @@ jobs:
       run: |
        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
 
+    # Update README.md title with repository name and latest tag
+    - name: Update README.md title
+      run: |
+        REPO_NAME=$(basename `git rev-parse --show-toplevel`)
+        sed -i "s/\[REPO_NAME\]/$REPO_NAME/" README.md
+
   # Render terraform docs inside the README.md and push changes back to PR branch
     - name: Create or update readme.md file
       uses: terraform-docs/gh-actions@v1.0.0
