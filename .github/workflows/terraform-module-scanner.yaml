@@ -111,9 +111,9 @@ jobs:
       with:
         tflint_version: v0.44.1
 
-  # Initialize TFLint plugins
+    # Initialize TFLint plugins
     - name: Init TFLint
-      run: tflint --init
+      run: tflint --init --config ./tflint/tflint.hcl
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -121,16 +121,16 @@ jobs:
     - name: Create tflint directory if it doesn't exist
       run: mkdir -p tflint
 
-  # Run TFLint and save results to a date-stamped file in the tflint/ directory
+    # Run TFLint and save results to a date-stamped file in the tflint/ directory
     - name: Run TFLint and save results
       continue-on-error: true
       run: |
         # Run tflint without redirection to see any error messages
-        tflint -f compact || true
+        tflint -f compact --config ./tflint/tflint.hcl || true
       
         # If the above command succeeds, then save the results to a file
         TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
-        tflint -f compact > tflint/tflint-results-$TIMESTAMP.txt
+        tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-$TIMESTAMP.txt
 
   # Commit the TFLint results to the repository
     - name: Commit TFLint results to the repository
@@ -232,6 +232,17 @@ jobs:
       run: |
         git pull origin main
 
+  # Fetch the latest tag
+    - name: Get latest tag
+      id: latesttag
+      run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+
+  # Update README.md title with repository name and latest tag
+    - name: Update README.md title
+      run: |
+        REPO_NAME=$(basename `git rev-parse --show-toplevel`)
+        sed -i "s/\[REPO_NAME\]/$REPO_NAME v${{ steps.latesttag.outputs.tag }}/" README.md
+
   # Render terraform docs inside the README.md and push changes back to PR branch
     - name: Create or update readme.md file
       uses: terraform-docs/gh-actions@v1.0.0
@@ -239,4 +250,5 @@ jobs:
         #config-file: .terraform-docs.yml
         config-file: ./terraform-docs/terraform-docs.yml
         git-push: "true"
+
   
