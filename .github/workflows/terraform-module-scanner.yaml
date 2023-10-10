@@ -266,7 +266,9 @@ jobs:
         config-file: ./terraform-docs/terraform-docs.yml
         git-push: "true"
 
-
+### ------------------------------------------ ###
+# NOTIFY SLACK
+### ------------------------------------------ ###
     - name: notify slack
       id: slack
       uses: slackapi/slack-github-action@v1.24.0
@@ -308,6 +310,6 @@ jobs:
                 }
               ]
             }
-        env:
+      env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
