@@ -21,7 +21,7 @@ on:
       - '.github/workflows/**'
 
 env:
-  SLACK_CHANNEL_ID: 'C060E5R85BP' # Define the Slack channel ID here
+  SLACK_CHANNEL_ID: 'C060DK2BWQM' # Define the Slack channel ID here
 
 jobs:
 
