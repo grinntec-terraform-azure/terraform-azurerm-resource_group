@@ -259,51 +259,6 @@ jobs:
 ### ------------------------------------------ ###
 # NOTIFY SLACK
 ### ------------------------------------------ ###
-    - name: notify slack
-      id: slack
-      uses: slackapi/slack-github-action@v1.24.0
-      # https://api.slack.com/apps/<your-app-id>/incoming-webhooks
-      if: ${{ success() }}
-      with:
-          channel-id: 'C060E5R85BP' # slack channel #alerts-test
-          payload: |
-            {
-              "text": "GitHub Action succeeded",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Production deployment check succeeded* :white_check_mark:\n Everything looks good!"
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":github: Successful action"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    },
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":grafana: Grafana dashboard"
-                      },
-                      "url": "https://<your_organization>.grafana.net/d/my-app-dashboard?from=now-1h&to=now"
-                    }
-                  ]
-                }
-              ]
-            }
-      env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-###
   notify-slack-tflint:
     needs: tflint
     runs-on: ubuntu-latest
