@@ -232,10 +232,13 @@ jobs:
       run: |
         git pull origin main
 
-  # Fetch the latest tag
-    - name: Get latest tag
+    - name: Get the latest tag
       id: latesttag
-      run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
+
+    - name: Update README.md
+      run: |
+        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
 
   # Update README.md title with repository name and latest tag
     - name: Update README.md title
@@ -250,15 +253,3 @@ jobs:
         #config-file: .terraform-docs.yml
         config-file: ./terraform-docs/terraform-docs.yml
         git-push: "true"
-
-########
-  # Fetch all tags from the remote repository
-    - name: Fetch all tags
-      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-
-  # Get the latest tag
-    - name: Get latest tag
-      id: latesttag
-      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
-
-  
