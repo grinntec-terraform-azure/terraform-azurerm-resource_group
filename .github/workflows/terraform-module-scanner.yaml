@@ -264,7 +264,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack
-        if: always()
+        if: failure()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           channel-id: 'C060E5R85BP' # Replace with your Slack channel ID
