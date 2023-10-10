@@ -1,0 +1,26 @@
+name: Update README tag
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Get latest tag
+      id: latesttag
+      run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+    - name: Update README.md
+      run: |
+        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
+    - name: Commit and push
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add README.md
+        git commit -m "Update README with latest tag"
+        git push
