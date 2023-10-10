@@ -262,19 +262,19 @@ jobs:
     - name: notify slack
       id: slack
       uses: slackapi/slack-github-action@v1.24.0
-        # https://api.slack.com/apps/<your-app-id>/incoming-webhooks
-      if: ${{ failure() }}
+      # https://api.slack.com/apps/<your-app-id>/incoming-webhooks
+      if: ${{ success() }}
       with:
           channel-id: 'C060DK2BWQM' # slack channel #alerts-test
           payload: |
             {
-              "text": "GitHub Action failed",
+              "text": "GitHub Action succeeded",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Production deployment check failed* :fire_engine:\n High error rate detected after deployment! Rolling back..."
+                    "text": "*Production deployment check succeeded* :white_check_mark:\n Everything looks good!"
                   }
                 },
                 {
@@ -284,7 +284,7 @@ jobs:
                       "type": "button",
                       "text": {
                         "type": "plain_text",
-                        "text": ":github: Failed action"
+                        "text": ":github: Successful action"
                       },
                       "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     },
@@ -303,3 +303,4 @@ jobs:
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+    
