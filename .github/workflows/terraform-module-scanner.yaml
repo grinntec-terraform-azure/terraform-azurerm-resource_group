@@ -251,4 +251,14 @@ jobs:
         config-file: ./terraform-docs/terraform-docs.yml
         git-push: "true"
 
+########
+  # Fetch all tags from the remote repository
+    - name: Fetch all tags
+      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+  # Get the latest tag
+    - name: Get latest tag
+      id: latesttag
+      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
+
   
