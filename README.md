@@ -1,5 +1,8 @@
 ![Latest Tag](https://img.shields.io/github/v/tag/grinntec-terraform-azure/terraform-azurerm-resource_group)
 
+![Latest Tag](https://img.shields.io/github/v/tag/neilgri/terraform-azurerm-resource_group)
+
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
