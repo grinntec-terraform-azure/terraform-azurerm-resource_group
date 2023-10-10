@@ -305,40 +305,39 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 ###
   notify-slack-tflint:
-  needs: tflint
-  runs-on: ubuntu-latest
-  steps:
-    - name: Notify Slack
-      if: always()
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-                channel-id: 'YOUR_SLACK_CHANNEL_ID' # Replace with your Slack channel ID
-                payload: |
-                  {
-                    "text": "TFLint Results for ${{ github.repository }}",
-                    "blocks": [
-                      {
-                        "type": "section",
-                        "text": {
-                          "type": "mrkdwn",
-                          "text": "*TFLint Results for ${{ github.repository }}*\n Check the GitHub Action logs for detailed results."
-                        }
-                      },
-                      {
-                        "type": "actions",
-                        "elements": [
-                          {
-                            "type": "button",
-                            "text": {
-                              "type": "plain_text",
-                              "text": ":github: View Action"
-                            },
-                            "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                          }
-                        ]
-                      }
-                    ]
+    needs: tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C060E5R85BP' # Replace with your Slack channel ID
+          payload: |
+            {
+              "text": "TFLint Results for ${{ github.repository }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*TFLint Results for ${{ github.repository }}*\n Check the GitHub Action logs for detailed results."
                   }
-              env:
-                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": ":github: View Action"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
