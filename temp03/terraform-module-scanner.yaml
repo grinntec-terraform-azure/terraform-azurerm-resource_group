@@ -83,7 +83,15 @@ jobs:
     - name: Terraform init, fmt, & validate
       run: |
         terraform init -backend=false; terraform fmt; terraform validate
-        
+        if [ $? -ne 0 ]; then
+          echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
+          echo "::set-output name=failed_step::Terraform init, fmt, & validate"
+          echo "::set-output name=failed::true"
+        else
+          echo "::set-output name=failed::false"
+        fi
+      id: terraform_check
+
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
       uses: EndBug/add-and-commit@v9.1.1
@@ -291,13 +299,13 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }}
         payload: |
           {
-            "text": ":boom:Error in workflow: ${{ github.workflow }} \n\n \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+            "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": ":boom:Error in workflow: ${{ github.workflow }} \n\n \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                  "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                 }
               },
               {
