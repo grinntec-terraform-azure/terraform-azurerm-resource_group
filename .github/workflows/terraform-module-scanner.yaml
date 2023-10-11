@@ -82,27 +82,15 @@ jobs:
 # The step is given an identifier `terraform_check` so it can be referred to in other parts of the workflow.
     - name: Terraform init, fmt, & validate
       run: |
-        terraform init -backend=false
+        terraform init -backend=false; terraform fmt; terraform validate
         if [ $? -ne 0 ]; then
-            echo "::set-output name=failed_step::Terraform init"
-            exit 1
-        fi
-
-        terraform fmt
-        if [ $? -ne 0 ]; then
-            echo "::set-output name=failed_step::Terraform fmt"
-            exit 1
-        fi
-
-        terraform validate
-        if [ $? -ne 0 ]; then
-            echo "::set-output name=failed_step::Terraform validate"
-            exit 1
+          echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
+          echo "::set-output name=failed_step::Terraform init, fmt, & validate"
+          echo "::set-output name=failed::true"
+        else
+          echo "::set-output name=failed::false"
         fi
       id: terraform_check
-      outputs:
-        failed_step: ${{ steps.terraform_check.outputs.failed_step }}
-
 
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
