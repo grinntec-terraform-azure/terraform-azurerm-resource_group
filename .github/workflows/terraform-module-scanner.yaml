@@ -267,19 +267,19 @@ jobs:
         git-push: "true"
 
 ### ------------------------------------------ ###
-# NOTIFY SLACK
+# NOTIFY SLACK ON ANY FAILURE
 ### ------------------------------------------ ###
 
-  notify-slack-terraform-fmt-validate:
-    name: 'Notify Slack on Failure'
+  notify-slack-on-failure:
+    name: 'Notify Slack on Any Failure'
     runs-on: ubuntu-latest
-    if: failure()
-    #if: steps.check_failure.outputs.failed == 'true'
+    if: failure() # This ensures the job runs only if any previous job fails
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
     steps:
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
+          channel-id: ${{ env.SLACK_CHANNEL_ID }}
           payload: |
             {
               "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nin::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
