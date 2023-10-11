@@ -1,0 +1,5 @@
+terraform scan results:
+
+Passed checks: 0, Failed checks: 0, Skipped checks: 0, Parsing errors: 1
+
+Error parsing file /github/workspace/main.tfֿ
