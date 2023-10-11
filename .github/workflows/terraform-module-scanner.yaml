@@ -73,6 +73,7 @@ jobs:
         else
             echo "::set-output name=failed::false"
         fi
+      id: terraform_check
 
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
