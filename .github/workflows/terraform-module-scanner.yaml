@@ -63,8 +63,8 @@ jobs:
   # Configures the backend to store the Terraform state.
   # The -backend=false option disables the backend configuration and instructs Terraform to use a local backend.
   # The Terraform state will be stored on the runner machine where the workflow is executed.
-  # Runs the fmt command to align the code correctly
-  # Runs validate to check the code for syntax errors
+  # Runs FMT to align the code correctly
+  # Runs VALIDATE to check the code for syntax errors
     - name: Terraform init, fmt, & validate
       run: terraform init -backend=false; terraform fmt; terraform validate
 
@@ -75,13 +75,13 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
         payload: |
           {
-            "text": "Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:grinntec-terraform-azure/terraform-azurerm-resource_group. \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+            "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:grinntec-terraform-azure/terraform-azurerm-resource_group. \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                  "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                 }
               },
               {
