@@ -68,41 +68,6 @@ jobs:
     - name: Terraform init, fmt, & validate
       run: terraform init -backend=false; terraform fmt; terraform validate
 
-    - name: Notify Slack for Terraform FMT & Validate Failure
-      if: failure()
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
-        payload: |
-          {
-            "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
-                }
-              },
-              {
-                "type": "actions",
-                "elements": [
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": ":github: View Action"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                ]
-              }
-            ]
-          }
-      env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-      
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
       uses: EndBug/add-and-commit@v9.1.1
@@ -333,6 +298,48 @@ jobs:
 ### ------------------------------------------ ###
 # NOTIFY SLACK
 ### ------------------------------------------ ###
+
+  notify-slack-terraform-fmt-validate:
+    name: 'Notify Slack Terraform FMT & Validate'
+    runs-on: ubuntu-latest
+    needs: terraform-fmt-validate
+    if: failure()
+    steps:
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+        channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
+        payload: |
+          {
+            "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":github: View Action"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  
   notify-slack-tflint:
     needs: tflint
     runs-on: ubuntu-latest
