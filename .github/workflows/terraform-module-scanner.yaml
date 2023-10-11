@@ -326,7 +326,7 @@ jobs:
         git-push: "true"
 
 ### ------------------------------------------ ###
-# NOTIFY SLACK ON ANY FAILURE
+# NOTIFY SLACK
 ### ------------------------------------------ ###
 
   # Job to notify a Slack channel in case of any failure in the specified jobs.
@@ -397,14 +397,14 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }}
         payload: |
           {
-            "text": ":check_mark_button:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
+            "text": ":white_check_mark:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
 
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": ":check_mark_button:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}"
+                  "text": ":white_check_mark:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}"
                 }
               },
               {
