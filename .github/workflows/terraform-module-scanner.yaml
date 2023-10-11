@@ -308,33 +308,33 @@ jobs:
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-        channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
-        payload: |
-          {
-            "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
-                }
-              },
-              {
-                "type": "actions",
-                "elements": [
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": ":github: View Action"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
+          payload: |
+            {
+              "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                   }
-                ]
-              }
-            ]
-          }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": ":github: View Action"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
