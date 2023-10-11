@@ -82,19 +82,12 @@ jobs:
 # The step is given an identifier `terraform_check` so it can be referred to in other parts of the workflow.
     - name: Terraform init, fmt, & validate
       run: |
-        if ! terraform init -backend=false; then
-            echo "FAILED_STEP=Terraform init" >> $GITHUB_ENV
-            exit 1
-        fi
-        
-        if ! terraform fmt; then
-            echo "FAILED_STEP=Terraform fmt" >> $GITHUB_ENV
-            exit 1
-        fi
-        
-        if ! terraform validate; then
-            echo "FAILED_STEP=Terraform validate" >> $GITHUB_ENV
-            exit 1
+        terraform init -backend=false; terraform fmt; terraform validate
+        if [ $? -ne 0 ]; then
+            echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
+            echo "::set-output name=failed::true"
+        else
+            echo "::set-output name=failed::false"
         fi
       id: terraform_check
 
