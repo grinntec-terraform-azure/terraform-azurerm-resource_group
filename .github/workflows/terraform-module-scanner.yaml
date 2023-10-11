@@ -67,11 +67,6 @@ jobs:
     - name: Terraform init, fmt, & validate
       run: |
         terraform init -backend=false; terraform fmt; terraform validate
-      continue-on-error: true
-      
-    - name: Terraform init, fmt, & validate
-      run: |
-        terraform init -backend=false; terraform fmt; terraform validate
         if [ $? -ne 0 ]; then
         echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
         echo "::set-output name=failed::true"
