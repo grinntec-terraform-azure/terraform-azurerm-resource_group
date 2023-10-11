@@ -298,13 +298,13 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nIn::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+              "text": ":boom:${{ env.FAILED_STEP }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nIn::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                    "text": ":boom:${{ env.FAILED_STEP }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                   }
                 },
                 {
