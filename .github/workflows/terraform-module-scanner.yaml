@@ -273,8 +273,8 @@ jobs:
   notify-slack-terraform-fmt-validate:
     name: 'Notify Slack on Failure'
     runs-on: ubuntu-latest
-    #if: failure()
-    if: steps.check_failure.outputs.failed == 'true'
+    if: failure()
+    #if: steps.check_failure.outputs.failed == 'true'
     steps:
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.24.0
