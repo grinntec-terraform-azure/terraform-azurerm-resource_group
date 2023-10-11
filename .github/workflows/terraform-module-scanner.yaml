@@ -274,39 +274,55 @@ jobs:
     
     steps:
     
-  # Check out the code to the runner environment where the workflow is running
+    # Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
       uses: actions/checkout@v3
       with:
         ref: main
-  
-  # Pull any changes down to the working directory      
+    
+    ## Pull any changes down to the working directory      
     - name: Pull latest changes
-      run: |
-        git pull origin main
-
-    - name: Fetch all tags
+      run: git pull origin main
+    
+    # Fetch all tags from the remote repository.
+    # This ensures that the local repository has an up-to-date list of all tags available in the remote.
+    - name: Fetch All Tags from Remote
       run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     
-    - name: Get latest tag
+    # Retrieve the latest tag from the git history.
+    # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
+    # variable for subsequent steps.
+    - name: Retrieve Latest Git Tag
       id: latesttag
       run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
-    
-    - name: Update README.md
-      run: |
-       sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
 
-    # Update README.md title with repository name and latest tag
-    - name: Update README.md title
+    # Update the README.md file to reflect the latest git tag.
+    # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
+    # it with the latest tag obtained from the previous step.
+    - name: Update Badge in readme with Git Tag
       run: |
+        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
+
+    # Update the title of README.md with the repository's name and the latest git tag.
+    # This step retrieves the repository name using git commands and then uses 'sed' to replace the 
+    # placeholder '[REPO_NAME]' in the README.md with the actual repository name.
+    - name: Set readme title with repository name
+      run: |
+        # Extract the repository name from the git URL
         REPO_NAME=$(basename `git rev-parse --show-toplevel`)
+    
+        # Replace the placeholder '[REPO_NAME]' in README.md with the actual repository name
         sed -i "s/\[REPO_NAME\]/$REPO_NAME/" README.md
 
-  # Render terraform docs inside the README.md and push changes back to PR branch
-    - name: Create or update readme.md file
+    # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
+    # into the README.md file.
+    # Once the documentation is updated, the changes are pushed back to the pull request branch.
+    - name: Generate and Update Terraform Documentation in README.md
       uses: terraform-docs/gh-actions@v1.0.0
       with:
+        # Specify the configuration file for 'terraform-docs'
         config-file: ./terraform-docs/terraform-docs.yml
+        # Enable pushing the updated README.md back to the pull request branch
         git-push: "true"
 
 ### ------------------------------------------ ###
