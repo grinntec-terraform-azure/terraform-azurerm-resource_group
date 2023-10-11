@@ -384,7 +384,7 @@ jobs:
 
   # Job to notify a Slack channel in case of any failure in the specified jobs.
   notify-slack-on-success:
-    name: 'Notify Slack on total success'
+    name: 'Notify Slack on Total Success'
     runs-on: ubuntu-latest
     
     # This job will only execute if any of the specified jobs fail.
@@ -401,7 +401,7 @@ jobs:
         payload: |
           {
             # Text message to be displayed in the Slack notification.
-            "text": "✅ Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
+            "text": ":check_mark_button:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
             
             # Additional blocks for richer message formatting in Slack.
             "blocks": [
@@ -409,7 +409,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "✅ Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}"
+                  "text": ":check_mark_button:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}"
                 }
               },
               {
