@@ -58,12 +58,28 @@ jobs:
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
 
-  # Initializes the Terraform working directory by downloading the required provider plugins and modules.
-  # Configures the backend to store the Terraform state.
-  # The -backend=false option disables the backend configuration and instructs Terraform to use a local backend.
-  # The Terraform state will be stored on the runner machine where the workflow is executed.
-  # Runs FMT to align the code correctly
-  # Runs VALIDATE to check the code for syntax errors
+# This step is responsible for initializing, formatting, and validating the Terraform code.
+# 
+# 1. `terraform init -backend=false`: 
+#    - Initializes the Terraform working directory.
+#    - Downloads the required provider plugins.
+#    - The `-backend=false` option disables backend configuration, which means Terraform will use a local backend.
+#      This means the Terraform state will be stored on the runner machine where the workflow is executed.
+#
+# 2. `terraform fmt`: 
+#    - Automatically formats the Terraform code to adhere to a canonical format and style.
+#
+# 3. `terraform validate`: 
+#    - Validates the Terraform code's syntax and checks for any errors.
+# 
+# After running the above commands, the script checks the exit status using `$?`:
+#    - If the exit status is not 0 (indicating an error), it sets an environment variable `FAILED_STEP` with the value "Terraform init, fmt, & validate".
+#      This can be used later in the workflow to identify which step failed.
+#    - It also sets an output variable `failed` to `true`, which can be used in subsequent steps or jobs.
+# 
+#    - If the exit status is 0 (indicating success), it sets the output variable `failed` to `false`.
+#
+# The step is given an identifier `terraform_check` so it can be referred to in other parts of the workflow.
     - name: Terraform init, fmt, & validate
       run: |
         terraform init -backend=false; terraform fmt; terraform validate
@@ -282,13 +298,13 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nin::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+              "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nIn::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nin::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                    "text": ":boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nIn::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                   }
                 },
                 {
