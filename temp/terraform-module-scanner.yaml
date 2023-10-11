@@ -52,7 +52,8 @@ jobs:
   
   ## Pull any changes down to the working directory      
     - name: Pull latest changes
-      run: git pull origin main
+      run: |
+        git pull origin main
         
   ## Install Terraform CLI on the runner machine
     - name: Setup Terraform on the runner
@@ -65,11 +66,7 @@ jobs:
   # Runs FMT to align the code correctly
   # Runs VALIDATE to check the code for syntax errors
     - name: Terraform init, fmt, & validate
-      run: |
-          terraform init -backend=false; terraform fmt; terraform validate
-          if [ $? -ne 0 ]; then
-          echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
-          fi
+      run: terraform init -backend=false; terraform fmt; terraform validate
 
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
@@ -303,8 +300,9 @@ jobs:
 ### ------------------------------------------ ###
 
   notify-slack-terraform-fmt-validate:
-    name: 'Notify Slack on Failure'
+    name: 'Notify Slack Terraform FMT & Validate'
     runs-on: ubuntu-latest
+    needs: terraform-fmt-validate
     if: failure()
     steps:
       - name: Notify Slack
@@ -313,13 +311,53 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
           payload: |
             {
-              "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }}" in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+              "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }}" in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                    "text": ":boom:Error in 'Terraform FMT & Validate' step of Terraform Module Scanner workflow in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": ":github: View Action"
+                      },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  
+  notify-slack-tflint:
+    needs: tflint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C060E5R85BP' # Replace with your Slack channel ID
+          payload: |
+            {
+              "text": "TFLint Results for ${{ github.repository }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*TFLint Results for ${{ github.repository }}*\n Check the GitHub Action logs for detailed results."
                   }
                 },
                 {
