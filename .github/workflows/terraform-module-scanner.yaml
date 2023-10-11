@@ -65,11 +65,17 @@ jobs:
   # Runs FMT to align the code correctly
   # Runs VALIDATE to check the code for syntax errors
     - name: Terraform init, fmt, & validate
-      run: |
-          terraform init -backend=false; terraform fmt; terraform validate
-          if [ $? -ne 0 ]; then
-          echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
-          fi
+      run: terraform init -backend=false; terraform fmt; terraform validate
+      
+    - name: Check for fmt & validate failure
+    id: check_failure
+    run: |
+      if [ $? -ne 0 ]; then
+        echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
+        echo "::set-output name=failed::true"
+      else
+        echo "::set-output name=failed::false"
+      fi
 
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
@@ -270,6 +276,7 @@ jobs:
     name: 'Notify Slack on Failure'
     runs-on: ubuntu-latest
     #if: failure()
+    if: steps.check_failure.outputs.failed == 'true'
     steps:
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.24.0
