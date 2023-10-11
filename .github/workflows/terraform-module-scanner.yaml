@@ -329,25 +329,34 @@ jobs:
 # NOTIFY SLACK ON ANY FAILURE
 ### ------------------------------------------ ###
 
+  # Job to notify a Slack channel in case of any failure in the specified jobs.
   notify-slack-on-failure:
     name: 'Notify Slack on Any Failure'
     runs-on: ubuntu-latest
-    if: failure() # This ensures the job runs only if any previous job fails
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
+    
+    # This job will only execute if any of the specified jobs fail.
+    if: failure()
+    
+    # Dependencies: This job depends on the completion of the following jobs.
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+    
     steps:
-    - name: Notify Slack
+    - name: Send Failure Notification to Slack
       uses: slackapi/slack-github-action@v1.24.0
       with:
         channel-id: ${{ env.SLACK_CHANNEL_ID }}
         payload: |
           {
-            "text": ":boom:Error in workflow: ${{ github.workflow }} \n\n \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+            # Text message to be displayed in the Slack notification.
+            "text": ":boom: Error in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}. Check the GitHub Action logs for detailed results.",
+            
+            # Additional blocks for richer message formatting in Slack.
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": ":boom:Error in workflow: ${{ github.workflow }} \n\n \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                  "text": ":boom: Error in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}. Check the GitHub Action logs for detailed results."
                 }
               },
               {
@@ -359,6 +368,7 @@ jobs:
                       "type": "plain_text",
                       "text": ":github: View Action"
                     },
+                    # Direct link to the GitHub Action run for easy access.
                     "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 ]
@@ -366,5 +376,61 @@ jobs:
             ]
           }
       env:
+        # Slack webhook URL for sending notifications.
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+        
+        # Specify the type of Slack webhook being used.
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # Job to notify a Slack channel in case of any failure in the specified jobs.
+  notify-slack-on-success:
+    name: 'Notify Slack on total success'
+    runs-on: ubuntu-latest
+    
+    # This job will only execute if any of the specified jobs fail.
+    if: success()
+    
+    # Dependencies: This job depends on the completion of the following jobs.
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+    
+    steps:
+    - name: Send Success Notification to Slack
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: ${{ env.SLACK_CHANNEL_ID }}
+        payload: |
+          {
+            # Text message to be displayed in the Slack notification.
+            "text": "✅ Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
+            
+            # Additional blocks for richer message formatting in Slack.
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "✅ Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":github: View Action"
+                    },
+                    # Direct link to the GitHub Action run for easy access.
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        # Slack webhook URL for sending notifications.
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+        
+        # Specify the type of Slack webhook being used.
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
