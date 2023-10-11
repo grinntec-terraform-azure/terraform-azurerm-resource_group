@@ -277,13 +277,13 @@ jobs:
           channel-id: ${{ env.SLACK_CHANNEL_ID }} # Use the environment variable here
           payload: |
             {
-              "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+              "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nin::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} in: \n\n:file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
+                    "text": ":boom:Error in workflow: ${{ github.workflow }}, \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nin::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                   }
                 },
                 {
