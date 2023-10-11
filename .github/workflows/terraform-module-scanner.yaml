@@ -9,19 +9,32 @@
 # - Checks Code using TFLInt
 # - Scans for security issues using CHECKOV
 # - Creates/updates README.md using Terraform Docs
+# - Sends a Slack message if any of the steps fail
+
 name: 'Terraform Module Scanner'
 
+# This workflow is triggered by manual dispatch, pull requests, and pushes to the 'main' branch.
+# However, it ignores any changes made within the '.github/workflows/' directory.
 on:
+  # Allows manual triggering of the workflow from the GitHub Actions UI.
   workflow_dispatch:
+  
+  # Triggers the workflow for any pull request.
   pull_request:
+  
+  # Triggers the workflow for pushes.
   push:
+    # Specifies that the workflow should only run for pushes to the 'main' branch.
     branches:
       - main
+      
+    # Exclude paths: The workflow won't run if only these paths are modified in a push.
     paths-ignore:
       - '.github/workflows/**'
 
 env:
   SLACK_CHANNEL_ID: 'C060DK2BWQM' # Define the Slack channel ID here
+# ${{ secrets.GITHUB_TOKEN }} is an automatically generated secret provided by GitHub for use in GitHub Actions.
 
 jobs:
 
@@ -35,11 +48,12 @@ jobs:
 # If the terraform validate command fails, subsequent steps in
 # the workflow will not execute.
 
+# Job definition for running Terraform formatting and validation checks.
   terraform-fmt-validate:
     name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
-    
     env:
+    # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -141,11 +155,6 @@ jobs:
         # Provide the GitHub token to allow TFLint to access any required GitHub resources.
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Ensure the tflint/ directory exists
-    # This is used to save the output as a log file
-    - name: Create tflint directory if it doesn't exist
-      run: mkdir -p tflint
-
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
@@ -168,10 +177,18 @@ jobs:
       with:
         # Specify the path pattern to the TFLint results files that need to be added to the commit.
         add: './tflint/tflint-results-*.txt'
-        # Define the author name for the commit.
-        author_name: 'terraform-module-scanner'
-        # Set the commit message.
-        message: 'Add TFLint scan results'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from TFLint'    
+  
+  ## Push changes to the main branch.
+  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+  ## environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
