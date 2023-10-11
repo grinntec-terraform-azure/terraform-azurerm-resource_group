@@ -82,14 +82,27 @@ jobs:
 # The step is given an identifier `terraform_check` so it can be referred to in other parts of the workflow.
     - name: Terraform init, fmt, & validate
       run: |
-        terraform init -backend=false; terraform fmt; terraform validate
+        terraform init -backend=false
         if [ $? -ne 0 ]; then
-            echo "FAILED_STEP=Terraform init, fmt, & validate" >> $GITHUB_ENV
-            echo "::set-output name=failed::true"
-        else
-            echo "::set-output name=failed::false"
+            echo "::set-output name=failed_step::Terraform init"
+            exit 1
+        fi
+
+        terraform fmt
+        if [ $? -ne 0 ]; then
+            echo "::set-output name=failed_step::Terraform fmt"
+            exit 1
+        fi
+
+        terraform validate
+        if [ $? -ne 0 ]; then
+            echo "::set-output name=failed_step::Terraform validate"
+            exit 1
         fi
       id: terraform_check
+      outputs:
+        failed_step: ${{ steps.terraform_check.outputs.failed_step }}
+
 
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
@@ -286,42 +299,42 @@ jobs:
 # NOTIFY SLACK ON ANY FAILURE
 ### ------------------------------------------ ###
 
-  notify-slack-on-failure:
-    name: 'Notify Slack on Any Failure'
-    runs-on: ubuntu-latest
-    if: failure() # This ensures the job runs only if any previous job fails
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
-    steps:
-      - name: Notify Slack
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          channel-id: ${{ env.SLACK_CHANNEL_ID }}
-          payload: |
-            {
-              "text": ":boom:${{ env.FAILED_STEP }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":boom:${{ env.FAILED_STEP }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ env.FAILED_STEP }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":github: View Action"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  ]
+notify-slack-on-failure:
+  name: 'Notify Slack on Any Failure'
+  runs-on: ubuntu-latest
+  if: failure() # This ensures the job runs only if any previous job fails
+  needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
+  steps:
+    - name: Notify Slack
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: ${{ env.SLACK_CHANNEL_ID }}
+        payload: |
+          {
+            "text": ":boom:${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results.",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": ":boom:${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\n :boom:Error in workflow: ${{ github.workflow }} \n\nFailed Step: ${{ needs.terraform-fmt-validate.outputs.failed_step }} \n\nRepository::file_folder:${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results."
                 }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": ":github: View Action"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
