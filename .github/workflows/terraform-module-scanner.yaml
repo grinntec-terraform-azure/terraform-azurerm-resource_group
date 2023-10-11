@@ -347,10 +347,8 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }}
         payload: |
           {
-            # Text message to be displayed in the Slack notification.
             "text": ":boom: Error in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}. Check the GitHub Action logs for detailed results.",
             
-            # Additional blocks for richer message formatting in Slack.
             "blocks": [
               {
                 "type": "section",
@@ -368,7 +366,6 @@ jobs:
                       "type": "plain_text",
                       "text": ":github: View Action"
                     },
-                    # Direct link to the GitHub Action run for easy access.
                     "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 ]
@@ -400,10 +397,8 @@ jobs:
         channel-id: ${{ env.SLACK_CHANNEL_ID }}
         payload: |
           {
-            # Text message to be displayed in the Slack notification.
             "text": ":check_mark_button:Success in workflow: ${{ github.workflow }}. Repository: ${{ github.repository }}",
-            
-            # Additional blocks for richer message formatting in Slack.
+
             "blocks": [
               {
                 "type": "section",
@@ -421,7 +416,6 @@ jobs:
                       "type": "plain_text",
                       "text": ":github: View Action"
                     },
-                    # Direct link to the GitHub Action run for easy access.
                     "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 ]
