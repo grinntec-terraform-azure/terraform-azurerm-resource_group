@@ -287,12 +287,12 @@ jobs:
 # NOTIFY SLACK ON ANY FAILURE
 ### ------------------------------------------ ###
 
-notify-slack-on-failure:
-  name: 'Notify Slack on Any Failure'
-  runs-on: ubuntu-latest
-  if: failure() # This ensures the job runs only if any previous job fails
-  needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
-  steps:
+  notify-slack-on-failure:
+    name: 'Notify Slack on Any Failure'
+    runs-on: ubuntu-latest
+    if: failure() # This ensures the job runs only if any previous job fails
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs] # List all jobs here
+    steps:
     - name: Notify Slack
       uses: slackapi/slack-github-action@v1.24.0
       with:
