@@ -17,8 +17,6 @@ sections:                       # Specify at a granular level what sections to h
   show-all: true
 
 content: |-                     # Customize the outputted file
-  ![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
- 
   {{ .Header }}                 
   {{ .Resources }}
   {{ .Requirements }}
