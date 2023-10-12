@@ -2,7 +2,7 @@ formatter: "markdown table"     # Format as Markdown document.
 
 version: ""                     # Specify the version of terraform-docs if needed
 
-header-from: main.tf            # Extract data from the main.tf file to use as a header. Referenced in content as {{ .Header }}
+#header-from: main.tf            # Extract data from the main.tf file to use as a header. Referenced in content as {{ .Header }}
 footer-from: ""
 
 recursive:                      # Documentation for main module and its submodules can be generated all in one execution
