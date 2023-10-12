@@ -1,19 +1,62 @@
-formatter: "markdown doc"     # Format as Markdown document.
+formatter: "markdown table"     # Format as Markdown document.
 
-output:
+version: ""                     # Specify the version of terraform-docs if needed
+
+header-from: main.tf            # Extract data from the main.tf file to use as a header. Referenced in content as {{ .Header }}
+footer-from: ""
+
+recursive:                      # Documentation for main module and its submodules can be generated all in one execution
+  enabled: false
+  path: ""                      # Path to find submodules
+
+sections:                       # Specify at a granular level what sections to hide/show
+  hide: []
+  show: []
+
+  hide-all: false
+  show-all: true
+
+content: |-                     # Customize the outputted file
+  {{ .Header }}                 
+  {{ .Resources }}
+  {{ .Requirements }}
+  {{ .Providers }}
+  {{ .Inputs }}
+  {{ .Modules }}
+  {{ .Outputs }}
+  
+  # Examples                    
+
+  ```hcl
+  {{ include "examples/main.tf" }}
+  ```  
+ 
+output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
   file: "README.md"           # Create README.md in the root.
-  mode: replace               # Completely replace the output-file with generated output.
+  mode: inject                # Creates the output-file if it doesn’t exist, otherwise it appends to output-file if it doesn’t have surrounding comments.
 
-settings:
+#output-values:                # Optional value field can be added to Outputs section which contains the current value of an output variable as it is found in state via terraform output
+  #enabled: false
+  #from: ""
+
+  sort:
+  enabled: true               # Sort the document
+  by:                         # By the required fields
+    - required                
+
+settings:                     # General settings to control the behavior and generated output items.
+  anchor: false               # Generate HTML anchor tag for elements.
   color: false                # Print colorized version of result in the terminal.
+  default: true               # Show “Default” value as column (in table format) or section (in document format).  
   description: true           # Show “Descriptions” as comment on variables.
+  escape: true                # Escape special characters (such as _, * in Markdown and >, < in JSON)
   hide-empty: true            # Hide empty sections.
-  read-comments: true         # Use comments from tf files for “Description” column (for inputs and outputs) when description is empty.
+  html: true                  # Generate HTML tags (a, pre, br, …) in the output.
+  indent: 2                   # Indentation level of headings [available: 1, 2, 3, 4, 5].
+  lockfile: true              # Read .terraform.lock.hcl to extract exact version of providers.
+  read-comments: true         # Use comments from tf files for “Description” column (for inputs and outputs) when description is empty
   required: true              # Show “Required” as column (in table format) or section (in document format).
   sensitive: true             # Show “Sensitive” as column (in table format) or section (in document format).
   type: true                  # Show “Type” as column (in table format) or section (in document format).
-  lockfile: true              # Read .terraform.lock.hcl to extract exact version of providers
 
-sort:
-  enabled: true               # Sort the document
-  by: required                # By the required fields
+
