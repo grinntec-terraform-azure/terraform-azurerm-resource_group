@@ -287,16 +287,16 @@ jobs:
     - name: Pull latest changes
       run: git pull origin main
 
-    # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
-    # into the README.md file.
-    # Once the documentation is updated, the changes are pushed back to the pull request branch.
-    - name: Generate and Update Terraform Documentation in README.md
-      uses: terraform-docs/gh-actions@v1.0.0
-      with:
-        # Specify the configuration file for 'terraform-docs'
-        config-file: ./terraform-docs/terraform-docs.yml
-        # Enable pushing the updated README.md back to the pull request branch
-        git-push: "true"
+    ## Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
+    ## into the README.md file.
+    ## Once the documentation is updated, the changes are pushed back to the pull request branch.
+    #- name: Generate and Update Terraform Documentation in README.md
+    #  uses: terraform-docs/gh-actions@v1.0.0
+    #  with:
+    #    # Specify the configuration file for 'terraform-docs'
+    #    config-file: ./terraform-docs/terraform-docs.yml
+    #    # Enable pushing the updated README.md back to the pull request branch
+    #    git-push: "true"
 
     ## Pull any changes down to the working directory      
     - name: Pull latest changes
