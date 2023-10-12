@@ -12,7 +12,7 @@ settings:
   required: true              # Show “Required” as column (in table format) or section (in document format).
   sensitive: true             # Show “Sensitive” as column (in table format) or section (in document format).
   type: true                  # Show “Type” as column (in table format) or section (in document format).
-  lockfile: true
+  lockfile: true              # Read .terraform.lock.hcl to extract exact version of providers
 
 sort:
   enabled: true               # Sort the document
