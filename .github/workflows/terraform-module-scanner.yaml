@@ -355,47 +355,71 @@ jobs:
         # Enable pushing the updated README.md back to the pull request branch
         git-push: "true"
 
-    # Pull any changes down to the working directory      
-    - name: Pull latest changes
-      run: git pull origin main
+### ------------------------------------------ ###
+# Readme badges
+### ------------------------------------------ ###
+# Automatically generate and update documentation for Terraform
+# modules in the README.md file, and push the changes back to 
+# the pull request branch in GitHub.
 
-    # Fetch all tags from the remote repository.
-    # This ensures that the local repository has an up-to-date list of all tags available in the remote.
-    - name: Fetch All Tags from Remote
-      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    readme-badges:
+      name: 'Readme Badges'
+      runs-on: ubuntu-latest
+      env:
+      # Provide the GitHub token to allow access to repository-related functionalities.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      needs: terraform-docs
     
-    # Retrieve the latest tag from the git history.
-    # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
-    # variable for subsequent steps.
-    - name: Retrieve Latest Git Tag
-      id: latesttag
-      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
-
-    # Update the README.md file to reflect the latest git tag.
-    # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
-    # it with the latest tag obtained from the previous step.
-    - name: Update Badge in readme with Git Tag
-      run: |
-        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
-
-    # Add the Checkov scan report to the repository and commit it with a commit message.
-    # This action requires authentication, which is provided through GITHUB_TOKEN.
-    - name: Commit the results
-      uses: EndBug/add-and-commit@v9.1.1
-      with:
-        add: 'README.md'
-        author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'Resulting from terraform-docs'    
+      steps:
     
-    # Push changes to the main branch.
-    # Requires authentication, which is provided through a GITHUB_TOKEN 
-    # environment variable.
-    - name: Push changes to main branch
-      uses: ad-m/github-push-action@master
-      with:
-        branch: main
-        directory: ./
-        github_token: ${{ env.GITHUB_TOKEN }}
+      # Check out the code to the runner environment where the workflow is running
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      # Pull any changes down to the working directory      
+      - name: Pull latest changes
+        run: git pull origin main
+
+    
+      # Fetch all tags from the remote repository.
+      # This ensures that the local repository has an up-to-date list of all tags available in the remote.
+      - name: Fetch All Tags from Remote
+        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      
+      # Retrieve the latest tag from the git history.
+      # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
+      # variable for subsequent steps.
+      - name: Retrieve Latest Git Tag
+        id: latesttag
+        run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
+
+      # Update the README.md file to reflect the latest git tag.
+      # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
+      # it with the latest tag obtained from the previous step.
+      - name: Update Badge in readme with Git Tag
+        run: |
+          sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
+
+      # Add the Checkov scan report to the repository and commit it with a commit message.
+      # This action requires authentication, which is provided through GITHUB_TOKEN.
+      - name: Commit the results
+        uses: EndBug/add-and-commit@v9.1.1
+        with:
+          add: 'README.md'
+          author_name: 'GitHub Action - terraform-module-scanner'
+          message: 'Resulting from terraform-docs'    
+    
+      # Push changes to the main branch.
+      # Requires authentication, which is provided through a GITHUB_TOKEN 
+      # environment variable.
+      - name: Push changes to main branch
+        uses: ad-m/github-push-action@master
+        with:
+          branch: main
+          directory: ./
+          github_token: ${{ env.GITHUB_TOKEN }}
 #
 #### ------------------------------------------ ###
 ## NOTIFY SLACK
