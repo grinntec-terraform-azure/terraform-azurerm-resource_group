@@ -34,7 +34,7 @@ content: |-                     # Customize the outputted file
  
 output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
   file: "README.md"           # Create README.md in the root.
-  mode: inject                # Creates the output-file if it doesn’t exist, otherwise it appends to output-file if it doesn’t have surrounding comments.
+  mode: replace                # Creates the output-file if it doesn’t exist, otherwise it appends to output-file if it doesn’t have surrounding comments.
 
 #output-values:                # Optional value field can be added to Outputs section which contains the current value of an output variable as it is found in state via terraform output
   #enabled: false
