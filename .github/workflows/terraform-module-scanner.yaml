@@ -269,7 +269,7 @@ jobs:
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: tflint
+    needs: checkov-security-scan
     
     steps:
 
@@ -426,7 +426,7 @@ jobs:
     if: failure()
     
     # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Failure Notification to Slack
@@ -476,7 +476,7 @@ jobs:
     if: success()
     
     # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+    needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Success Notification to Slack
