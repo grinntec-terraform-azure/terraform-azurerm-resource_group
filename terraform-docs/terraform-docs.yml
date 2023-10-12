@@ -16,21 +16,21 @@ sections:                       # Specify at a granular level what sections to h
   hide-all: false
   show-all: true
 
-content: |-                     # Customize the outputted file
-  {{ .Header }}                 
-  {{ .Resources }}
-  {{ .Requirements }}
-  {{ .Providers }}
-  {{ .Inputs }}
-  {{ .Modules }}
-  {{ .Outputs }}
+#content: |-                     # Customize the outputted file
+#  {{ .Header }}                 
+#  {{ .Resources }}
+#  {{ .Requirements }}
+#  {{ .Providers }}
+#  {{ .Inputs }}
+#  {{ .Modules }}
+#  {{ .Outputs }}
   
   # Examples
-  This is an example configuration module that would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit prior to running the code.                
+#  This is an example configuration module that would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit prior to running the code.                
 
-  ```hcl
-  {{ include "examples/main.tf" }}
-  ```  
+#  ```hcl
+#  {{ include "examples/main.tf" }}
+#  ```  
  
 output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
   file: "README.md"           # Create README.md in the root.
