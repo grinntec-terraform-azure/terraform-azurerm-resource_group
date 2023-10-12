@@ -286,15 +286,11 @@ jobs:
     - name: Pull latest changes
       run: git pull origin main
 
-    - name: Print current directory and contents
-      run: |
-        pwd
-        ls -la
-
     # Check and if not-exist create a README.md file with the specified content
     - name: Check and Create README.md
       run: |
         if [[ ! -f README.md ]]; then
+          echo "" > README.md
         fi
     
     # Add the Checkov scan report to the repository and commit it with a commit message.
