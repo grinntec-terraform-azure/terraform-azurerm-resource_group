@@ -270,6 +270,9 @@ jobs:
   terraform-docs:
     name: 'Terraform Docs'
     runs-on: ubuntu-latest
+    env:
+    # Provide the GitHub token to allow access to repository-related functionalities.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: tflint
     
     steps:
