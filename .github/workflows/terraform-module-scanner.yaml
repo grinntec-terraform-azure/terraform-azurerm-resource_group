@@ -331,7 +331,12 @@ jobs:
     
         # Replace the placeholder '[REPO_NAME]' in README.md with the actual repository name
         sed -i "s/\[REPO_NAME\]/$REPO_NAME/" README.md
-  
+
+    - name: Commit changes
+      run: |
+        git add README.md
+        git commit -m "Update README.md with latest tag and repo name"
+
     # Push changes to the main branch.
     # Requires authentication, which is provided through a GITHUB_TOKEN 
     # environment variable.
