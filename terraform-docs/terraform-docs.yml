@@ -25,7 +25,8 @@ content: |-                     # Customize the outputted file
   {{ .Modules }}
   {{ .Outputs }}
   
-  # Examples                    
+  # Examples
+  This is an example configuration module that would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit prior to running the code.                
 
   ```hcl
   {{ include "examples/main.tf" }}
