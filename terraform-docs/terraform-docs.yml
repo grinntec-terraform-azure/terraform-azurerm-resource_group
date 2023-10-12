@@ -17,6 +17,7 @@ sections:                       # Specify at a granular level what sections to h
   show-all: true
 
 content: |-                     # Customize the outputted file
+  ![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
   {{ .Header }}                 
   {{ .Resources }}
   {{ .Requirements }}
@@ -39,12 +40,8 @@ content: |-                     # Customize the outputted file
 output:
   file: README.md
   mode: inject
-  template: |-
-    ![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
-    <!-- BEGIN_TF_DOCS -->
-    {{ .Content }}
-    <!-- END_TF_DOCS -->    
-
+  #template: |-
+    
 
   sort:
   enabled: true               # Sort the document
