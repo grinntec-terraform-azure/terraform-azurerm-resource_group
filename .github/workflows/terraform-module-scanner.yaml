@@ -283,7 +283,22 @@ jobs:
     ## Pull any changes down to the working directory      
     - name: Pull latest changes
       run: git pull origin main
-    
+
+    # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
+    # into the README.md file.
+    # Once the documentation is updated, the changes are pushed back to the pull request branch.
+    - name: Generate and Update Terraform Documentation in README.md
+      uses: terraform-docs/gh-actions@v1.0.0
+      with:
+        # Specify the configuration file for 'terraform-docs'
+        config-file: ./terraform-docs/terraform-docs.yml
+        # Enable pushing the updated README.md back to the pull request branch
+        git-push: "true"
+
+    ## Pull any changes down to the working directory      
+    - name: Pull latest changes
+      run: git pull origin main
+
     # Fetch all tags from the remote repository.
     # This ensures that the local repository has an up-to-date list of all tags available in the remote.
     - name: Fetch All Tags from Remote
@@ -313,17 +328,18 @@ jobs:
     
         # Replace the placeholder '[REPO_NAME]' in README.md with the actual repository name
         sed -i "s/\[REPO_NAME\]/$REPO_NAME/" README.md
-
-    # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
-    # into the README.md file.
-    # Once the documentation is updated, the changes are pushed back to the pull request branch.
-    - name: Generate and Update Terraform Documentation in README.md
-      uses: terraform-docs/gh-actions@v1.0.0
+  
+    # Push changes to the main branch.
+    # Requires authentication, which is provided through a GITHUB_TOKEN 
+    # environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
       with:
-        # Specify the configuration file for 'terraform-docs'
-        config-file: ./terraform-docs/terraform-docs.yml
-        # Enable pushing the updated README.md back to the pull request branch
-        git-push: "true"
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
+
+
 
 ### ------------------------------------------ ###
 # NOTIFY SLACK
