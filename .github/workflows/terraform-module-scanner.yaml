@@ -282,21 +282,6 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: main
-    
-    ## Pull any changes down to the working directory      
-    - name: Pull latest changes
-      run: git pull origin main
-
-    ## Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
-    ## into the README.md file.
-    ## Once the documentation is updated, the changes are pushed back to the pull request branch.
-    #- name: Generate and Update Terraform Documentation in README.md
-    #  uses: terraform-docs/gh-actions@v1.0.0
-    #  with:
-    #    # Specify the configuration file for 'terraform-docs'
-    #    config-file: ./terraform-docs/terraform-docs.yml
-    #    # Enable pushing the updated README.md back to the pull request branch
-    #    git-push: "true"
 
     ## Pull any changes down to the working directory      
     - name: Pull latest changes
@@ -321,38 +306,16 @@ jobs:
       run: |
         sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
 
-    # Update the title of README.md with the repository's name and the latest git tag.
-    # This step retrieves the repository name using git commands and then uses 'sed' to replace the 
-    # placeholder '[REPO_NAME]' in the README.md with the actual repository name.
-    - name: Set readme title with repository name
-      run: |
-        # Extract the repository name from the git URL
-        REPO_NAME=$(basename `git rev-parse --show-toplevel`)
-    
-        # Replace the placeholder '[REPO_NAME]' in README.md with the actual repository name
-        sed -i "s/\[REPO_NAME\]/$REPO_NAME/" README.md
-
-    - name: Set Git User
-      run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
-    
-    - name: Commit changes
-      run: |
-        git add README.md
-        git commit -m "Update README.md with latest tag and repo name"
-
-
-    # Push changes to the main branch.
-    # Requires authentication, which is provided through a GITHUB_TOKEN 
-    # environment variable.
-    - name: Push changes to main branch
-      uses: ad-m/github-push-action@master
+    # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
+    # into the README.md file.
+    # Once the documentation is updated, the changes are pushed back to the pull request branch.
+    - name: Generate and Update Terraform Documentation in README.md
+      uses: terraform-docs/gh-actions@v1.0.0
       with:
-        branch: main
-        directory: ./
-        github_token: ${{ env.GITHUB_TOKEN }}
-
+        # Specify the configuration file for 'terraform-docs'
+        config-file: ./terraform-docs/terraform-docs.yml
+        # Enable pushing the updated README.md back to the pull request branch
+        git-push: "true"
 
 #
 #### ------------------------------------------ ###
