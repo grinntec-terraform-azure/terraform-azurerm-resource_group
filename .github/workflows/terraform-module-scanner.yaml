@@ -295,7 +295,6 @@ jobs:
     - name: Check and Create README.md
       run: |
         if [[ ! -f README.md ]]; then
-          echo "![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)" >> README.md
         fi
     
     # Add the Checkov scan report to the repository and commit it with a commit message.
