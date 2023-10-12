@@ -303,7 +303,7 @@ jobs:
     - name: Commit the results
       uses: EndBug/add-and-commit@v9.1.1
       with:
-        add: './checkov/checkov-security-scan-*.txt'
+        add: 'README.md'
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from terraform-docs'    
     
@@ -383,7 +383,7 @@ jobs:
     - name: Commit the results
       uses: EndBug/add-and-commit@v9.1.1
       with:
-        add: './checkov/checkov-security-scan-*.txt'
+        add: 'README.md'
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from terraform-docs'    
     
