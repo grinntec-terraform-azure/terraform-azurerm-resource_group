@@ -362,7 +362,7 @@ jobs:
 # modules in the README.md file, and push the changes back to 
 # the pull request branch in GitHub.
 
-    readme-badges:
+  readme-badges:
       name: 'Readme Badges'
       runs-on: ubuntu-latest
       env:
