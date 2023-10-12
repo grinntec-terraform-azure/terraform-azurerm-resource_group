@@ -343,107 +343,108 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 
-
-### ------------------------------------------ ###
-# NOTIFY SLACK
-### ------------------------------------------ ###
-
-  # Job to notify a Slack channel in case of any failure in the specified jobs.
-  notify-slack-on-failure:
-    name: 'Notify Slack on Any Failure'
-    runs-on: ubuntu-latest
-    
-    # This job will only execute if any of the specified jobs fail.
-    if: failure()
-    
-    # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
-    
-    steps:
-    - name: Send Failure Notification to Slack
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        channel-id: ${{ env.SLACK_CHANNEL_ID }}
-        payload: |
-          {
-            "text": ":boom: Error in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results",
-            
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": ":boom: Error in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results"
-                }
-              },
-              {
-                "type": "actions",
-                "elements": [
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": ":github: View Action"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                ]
-              }
-            ]
-          }
-      env:
-        # Slack webhook URL for sending notifications.
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-        
-        # Specify the type of Slack webhook being used.
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-  # Job to notify a Slack channel in case of any failure in the specified jobs.
-  notify-slack-on-success:
-    name: 'Notify Slack on Total Success'
-    runs-on: ubuntu-latest
-    
-    # This job will only execute if any of the specified jobs fail.
-    if: success()
-    
-    # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
-    
-    steps:
-    - name: Send Success Notification to Slack
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        channel-id: ${{ env.SLACK_CHANNEL_ID }}
-        payload: |
-          {
-            "text": ":white_check_mark: Success in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }}",
-
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": ":white_check_mark: Success in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }}"
-                }
-              },
-              {
-                "type": "actions",
-                "elements": [
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": ":github: View Action"
-                    },
-                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  }
-                ]
-              }
-            ]
-          }
-      env:
-        # Slack webhook URL for sending notifications.
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-        
-        # Specify the type of Slack webhook being used.
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#
+#### ------------------------------------------ ###
+## NOTIFY SLACK
+#### ------------------------------------------ ###
+#
+#  # Job to notify a Slack channel in case of any failure in the specified jobs.
+#  notify-slack-on-failure:
+#    name: 'Notify Slack on Any Failure'
+#    runs-on: ubuntu-latest
+#    
+#    # This job will only execute if any of the specified jobs fail.
+#    if: failure()
+#    
+#    # Dependencies: This job depends on the completion of the following jobs.
+#    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+#    
+#    steps:
+#    - name: Send Failure Notification to Slack
+#      uses: slackapi/slack-github-action@v1.24.0
+#      with:
+#        channel-id: ${{ env.SLACK_CHANNEL_ID }}
+#        payload: |
+#          {
+#            "text": ":boom: Error in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results",
+#            
+#            "blocks": [
+#              {
+#                "type": "section",
+#                "text": {
+#                  "type": "mrkdwn",
+#                  "text": ":boom: Error in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }} \n\n:clipboard:Check the GitHub Action logs for detailed results"
+#                }
+#              },
+#              {
+#                "type": "actions",
+#                "elements": [
+#                  {
+#                    "type": "button",
+#                    "text": {
+#                      "type": "plain_text",
+#                      "text": ":github: View Action"
+#                    },
+#                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+#                  }
+#                ]
+#              }
+#            ]
+#          }
+#      env:
+#        # Slack webhook URL for sending notifications.
+#        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+#        
+#        # Specify the type of Slack webhook being used.
+#        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#
+#  # Job to notify a Slack channel in case of any failure in the specified jobs.
+#  notify-slack-on-success:
+#    name: 'Notify Slack on Total Success'
+#    runs-on: ubuntu-latest
+#    
+#    # This job will only execute if any of the specified jobs fail.
+#    if: success()
+#    
+#    # Dependencies: This job depends on the completion of the following jobs.
+#    needs: [terraform-fmt-validate, tflint, checkov-security-scan, terraform-docs]
+#    
+#    steps:
+#    - name: Send Success Notification to Slack
+#      uses: slackapi/slack-github-action@v1.24.0
+#      with:
+#        channel-id: ${{ env.SLACK_CHANNEL_ID }}
+#        payload: |
+#          {
+#            "text": ":white_check_mark: Success in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }}",
+#
+#            "blocks": [
+#              {
+#                "type": "section",
+#                "text": {
+#                  "type": "mrkdwn",
+#                  "text": ":white_check_mark: Success in workflow: ${{ github.workflow }} \n\n:file_folder: Repository: ${{ github.repository }}"
+#                }
+#              },
+#              {
+#                "type": "actions",
+#                "elements": [
+#                  {
+#                    "type": "button",
+#                    "text": {
+#                      "type": "plain_text",
+#                      "text": ":github: View Action"
+#                    },
+#                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+#                  }
+#                ]
+#              }
+#            ]
+#          }
+#      env:
+#        # Slack webhook URL for sending notifications.
+#        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+#        
+#        # Specify the type of Slack webhook being used.
+#        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#
