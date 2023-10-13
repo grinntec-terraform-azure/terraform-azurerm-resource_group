@@ -344,11 +344,9 @@ jobs:
       uses: dcarbone/install-jq-action@v2.0.2            
 
 #    - Validates the Terraform code's syntax and checks for any errors.
-    - name: Terraform init, fmt, & validate
+    - name: Terraform init, plan, & convert to JSON
       run: |
-        terraform init -backend=false
-        terraform plan --out tfplan.binary
-        terraform show -json tfplan.binary | jq > tfplan.json
+        terraform init -backend=false; terraform plan --out tfplan.binary; terraform show -json tfplan.binary | jq > tfplan.json
 
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
