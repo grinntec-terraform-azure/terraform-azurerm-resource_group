@@ -63,11 +63,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: main
-  
-  ## Pull any changes down to the working directory      
-    - name: Pull latest changes
-      run: git pull origin main
-        
+         
   ## Install Terraform CLI on the runner machine
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
@@ -87,7 +83,9 @@ jobs:
 #    - Validates the Terraform code's syntax and checks for any errors.
     - name: Terraform init, fmt, & validate
       run: |
-        terraform init -backend=false; terraform fmt; terraform validate
+        terraform init -backend=false
+        terraform fmt
+        terraform validate
         
   ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
