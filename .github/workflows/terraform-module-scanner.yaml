@@ -195,13 +195,13 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
-# CHECKOV SECURITY SCAN
+# CHECKOV SECURITY SCAN - MODULE
 ### ------------------------------------------ ###
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 
   checkov-security-scan:
-    name: 'Checkov Security Scan'
+    name: 'Checkov Security Scan - Module'
     runs-on: ubuntu-latest
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
@@ -234,14 +234,15 @@ jobs:
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        directory: ./  # IaC root directory
-        output_format: cli # Report output format
+        config-file: './checkov-security-scan/checkov-config-tf-module'
+        #directory: ./  # IaC root directory
+        #output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
-        output_file_path: './checkov-security-scan/' # Name of the output folder to save the chosen output formats
+        #output_file_path: './checkov-security-scan/' # Name of the output folder to save the chosen output formats
         #compact: 'true' # For the CLI output, do not display code blocks
-        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
-        skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
-        soft_fail: 'false' # Runs checks but always returns a 0 exit code    
+        #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
+        #soft_fail: 'false' # Runs checks but always returns a 0 exit code    
 
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
