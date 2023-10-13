@@ -32,6 +32,13 @@ content: |-                     # Customize the outputted file
   ```hcl
   {{ include "example/main.tf" }}
   ```
+   
+  # TFLint Results
+  The results of the most recent TFLint. If there is no data, then there are no issues logged.
+
+  ```hcl
+  {{ include "tflint/tflint-results.txt" }}
+  ```
 
   # Checkov Security Scan Results - module
   The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
@@ -46,6 +53,8 @@ content: |-                     # Customize the outputted file
   ```hcl
   {{ include "checkov-security-scan/example/results_cli.txt" }}
   ```
+
+
 
 #output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
 #  file: "README.md"           # Create README.md in the root.
