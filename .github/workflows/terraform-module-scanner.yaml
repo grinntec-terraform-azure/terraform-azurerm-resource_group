@@ -266,6 +266,77 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
+# CHECKOV SECURITY SCAN - EXAMPLE
+### ------------------------------------------ ###
+# Run a security scan on the Terraform code using the Checkov tool.
+# Commit the results to the repository.
+
+  checkov-security-scan:
+    name: 'Checkov Security Scan - Module'
+    runs-on: ubuntu-latest
+    env:
+    # Provide the GitHub token to allow access to repository-related functionalities.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #needs: [terraform-fmt-validate,tflint]
+
+    steps:
+    
+    # Check out the code to the runner environment where the workflow is running
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: main
+    
+    ## Pull any changes down to the working directory      
+    - name: Pull latest changes
+      run: git pull origin main
+
+    # Ensure the 'checkov' directory exists
+    #- name: Manage 'checkov' directory
+    #  run: mkdir -p checkov
+
+    # Generate the timestamped file path for the Checkov scan results
+    #- name: Generate Checkov output file path
+      #run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
+    
+
+    # Run a security scan on the Terraform code using the Checkov tool.
+    # Generate a report of security issues that were found.
+    - name: Run Checkov Scan
+      uses: bridgecrewio/checkov-action@master
+      with:
+        #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
+        #directory: ./  # IaC root directory
+        file: ./examples/main.tf
+        output_format: cli # Report output format
+        #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
+        output_file_path: './checkov-security-scan/examples/' # Name of the output folder to save the chosen output formats
+        #compact: 'true' # For the CLI output, do not display code blocks
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
+        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
+
+# Add the Checkov scan report to the repository and commit it with a commit message.
+# This action requires authentication, which is provided through GITHUB_TOKEN.
+    - name: Commit the results
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        #add: './checkov/checkov-security-scan-*.txt'
+        add: './checkov-security-scan/*'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from checkov'    
+
+  ## Push changes to the main branch.
+  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+  ## environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
+
+### ------------------------------------------ ###
 # Create README.md
 ### ------------------------------------------ ###
   create-readme:

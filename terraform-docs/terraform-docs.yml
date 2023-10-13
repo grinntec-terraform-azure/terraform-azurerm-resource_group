@@ -40,6 +40,13 @@ content: |-                     # Customize the outputted file
   {{ include "checkov-security-scan/module/results_cli.txt" }}
   ```
  
+   # Checkov Security Scan Results - example
+  The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
+
+  ```hcl
+  {{ include "checkov-security-scan/examples/results_cli.txt" }}
+  ```
+
 #output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
 #  file: "README.md"           # Create README.md in the root.
 #  mode: replace                # Creates the output-file if it doesn’t exist, otherwise it appends to output-file if it doesn’t have surrounding comments.
