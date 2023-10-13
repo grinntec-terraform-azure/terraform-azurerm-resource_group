@@ -1,7 +1,7 @@
 
 
 <!-- BEGIN_TF_DOCS -->
-![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
+![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
 # Azure Resource Group Terraform Module
 
 This Terraform module is designed to provision an Azure Resource Group.
@@ -53,7 +53,7 @@ Note: Always ensure you're using the correct Terraform and provider versions bef
 | resource\_group\_name | The name of the resource group |
 
 # Examples
-This is an example configuration module that would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit prior to running the code.
+This example configuration module would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit before running the code.
 
 ```hcl
 ############################################################
@@ -113,6 +113,13 @@ output "resource_group_location" {
   value       = module.azure_resource_group.location
 }
 
+
+```
+
+# Checkov Security Scan Results
+The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
+
+```hcl
 
 ```
 <!-- END_TF_DOCS -->
