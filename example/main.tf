@@ -33,7 +33,8 @@ terraform {
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+  #source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" // uncommen to use GitHub repo as source
+  source =  "../" // This source is used for testing the plan using GitHub actions, not for production
 
   # Provide values for the module's variables
   app_name    = "myapp"
