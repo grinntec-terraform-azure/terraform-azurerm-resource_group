@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
+![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
 # Azure Resource Group Terraform Module
 
 This Terraform module is designed to provision an Azure Resource Group.
@@ -50,7 +50,7 @@ Note: Always ensure you're using the correct Terraform and provider versions bef
 | location | The location of the resource |
 | resource\_group\_name | The name of the resource group |
 
-# Examples
+# Example
 This example configuration module would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit before running the code.
 
 ```hcl
@@ -90,7 +90,7 @@ terraform {
 ############################################################
 module "azure_resource_group" {
   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
-
+  
   # Provide values for the module's variables
   app_name    = "myapp"
   environment = "dev"
@@ -136,7 +136,7 @@ Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
 
 		35 | module "azure_resource_group" {
 		36 |   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
-		37 | 
+		37 |   
 		38 |   # Provide values for the module's variables
 		39 |   app_name    = "myapp"
 		40 |   environment = "dev"
