@@ -200,7 +200,7 @@ jobs:
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 
-  checkov-security-scan:
+  checkov-security-scan-module:
     name: 'Checkov Security Scan - Module'
     runs-on: ubuntu-latest
     env:
@@ -271,7 +271,7 @@ jobs:
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 
-  checkov-security-scan:
+  checkov-security-scan-example:
     name: 'Checkov Security Scan - Module'
     runs-on: ubuntu-latest
     env:
