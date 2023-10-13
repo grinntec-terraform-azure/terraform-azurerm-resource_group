@@ -1,5 +1,3 @@
-![workflow name](https://github.com/grinntec-terraform-azure/terraform-azurerm-resource_group/actions/workflows/terraform-module-scanner.yaml/badge.svg)
-
 <!-- BEGIN_TF_DOCS -->
 ![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
 # Azure Resource Group Terraform Module
