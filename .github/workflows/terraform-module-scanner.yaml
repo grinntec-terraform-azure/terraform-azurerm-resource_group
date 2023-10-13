@@ -39,22 +39,6 @@ env:
 
 jobs:
 
-  #### ------------------------------------------ ###
-  ## SETUP REPO
-  #### ------------------------------------------ ###
-  setup-repo:
-    name: 'Setup Repository'
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-      with:
-        ref: main
-    - name: Pull latest changes
-      run: git pull origin main
-
 #### ------------------------------------------ ###
 ## TERRAFORM FMT & VALIDATE
 #### ------------------------------------------ ###
@@ -69,18 +53,17 @@ jobs:
   terraform-fmt-validate:
     name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
-    needs: setup-repo
     #env:
     # Provide the GitHub token to allow access to repository-related functionalities.
      # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     
-  ### Check out the code to the runner environment where the workflow is running
-  #  - name: Checkout the repository
-  #    uses: actions/checkout@v3
-  #    with:
-  #      ref: main
+  ## Check out the code to the runner environment where the workflow is running
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: main
          
   ## Install Terraform CLI on the runner machine
     - name: Setup Terraform on the runner
@@ -133,7 +116,7 @@ jobs:
     #env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: [setup-repo, terraform-fmt-validate]
+    needs: [terraform-fmt-validate]
 
     steps:
 
