@@ -213,29 +213,15 @@ jobs:
     - name: Pull latest changes
       run: git pull origin main
 
-    # Ensure the 'checkov' directory exists
-    #- name: Manage 'checkov' directory
-    #  run: mkdir -p checkov
-
-    # Generate the timestamped file path for the Checkov scan results
-    #- name: Generate Checkov output file path
-      #run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
-    
-
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
-        #directory: ./  # IaC root directory
         file: ./main.tf
         output_format: cli # Report output format
-        #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
         output_file_path: './checkov-security-scan/module/' # Name of the output folder to save the chosen output formats
-        #compact: 'true' # For the CLI output, do not display code blocks
         framework: terraform # Filter scan to run only on specific infrastructure code frameworks
-        #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
@@ -288,29 +274,15 @@ jobs:
     - name: Pull latest changes
       run: git pull origin main
 
-    # Ensure the 'checkov' directory exists
-    #- name: Manage 'checkov' directory
-    #  run: mkdir -p checkov
-
-    # Generate the timestamped file path for the Checkov scan results
-    #- name: Generate Checkov output file path
-      #run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
-    
-
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
-        #directory: ./  # IaC root directory
         file: ./example/main.tf
         output_format: cli # Report output format
-        #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
         output_file_path: './checkov-security-scan/example/' # Name of the output folder to save the chosen output formats
-        #compact: 'true' # For the CLI output, do not display code blocks
         framework: terraform # Filter scan to run only on specific infrastructure code frameworks
-        #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
@@ -338,6 +310,83 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
+# CHECKOV SECURITY SCAN - EXAMPLE PLAN
+### ------------------------------------------ ###
+# Run a security scan on the Terraform code using the Checkov tool.
+# Commit the results to the repository.
+
+  checkov-security-scan-example-plan:
+    name: 'Checkov Security Scan - Example Plan'
+    runs-on: ubuntu-latest
+    env:
+    # Provide the GitHub token to allow access to repository-related functionalities.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs: [checkov-security-scan-module]
+
+    steps:
+    
+    # Check out the code to the runner environment where the workflow is running
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: main
+    
+    ## Pull any changes down to the working directory      
+    - name: Pull latest changes
+      run: git pull origin main
+
+     ## Install Terraform CLI on the runner machine
+    - name: Setup Terraform on the runner
+      uses: hashicorp/setup-terraform@v2.0.3
+
+    ## Install jq
+    - name: Install jq on the runner
+      uses: dcarbone/install-jq-action@v2.0.2            
+
+#    - Validates the Terraform code's syntax and checks for any errors.
+    - name: Terraform init, fmt, & validate
+      run: |
+        terraform init -backend=false
+        terraform plan --out tfplan.binary
+        terraform show -json tfplan.binary | jq > tfplan.json
+
+    # Run a security scan on the Terraform code using the Checkov tool.
+    # Generate a report of security issues that were found.
+    - name: Run Checkov Scan
+      uses: bridgecrewio/checkov-action@master
+      with:
+        file: ./example/tfplan.json
+        output_format: cli # Report output format
+        output_file_path: './checkov-security-scan/example-plan/' # Name of the output folder to save the chosen output formats
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
+
+     # Strip out ANSI codes from the Checkov scan results
+    - name: Clean Checkov Output
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/example/results_cli.txt
+
+# Add the Checkov scan report to the repository and commit it with a commit message.
+# This action requires authentication, which is provided through GITHUB_TOKEN.
+    - name: Commit the results
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        #add: './checkov/checkov-security-scan-*.txt'
+        add: './checkov-security-scan/*'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from checkov'    
+
+  ## Push changes to the main branch.
+  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+  ## environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
+
+
+### ------------------------------------------ ###
 # Create README.md
 ### ------------------------------------------ ###
   create-readme:
@@ -346,7 +395,7 @@ jobs:
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: [checkov-security-scan-module, checkov-security-scan-example]
+    needs: [checkov-security-scan-module, checkov-security-scan-example,checkov-security-scan-example-plan]
     
     steps:
 
@@ -503,7 +552,7 @@ jobs:
     if: failure()
     
     # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
+    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, checkov-security-scan-example-plan, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Failure Notification to Slack
@@ -554,7 +603,7 @@ jobs:
     
     # Dependencies: This job depends on the completion of the following jobs.
     #needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
-    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
+    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, checkov-security-scan-example-plan, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Success Notification to Slack

@@ -26,7 +26,7 @@ content: |-                     # Customize the outputted file
   {{ .Modules }}
   {{ .Outputs }}
   
-  # Examples
+  # Example
   This example configuration module would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit before running the code.                
 
   ```hcl
@@ -46,6 +46,15 @@ content: |-                     # Customize the outputted file
   ```hcl
   {{ include "checkov-security-scan/example/results_cli.txt" }}
   ```
+
+   # Checkov Security Scan Results - example plan
+  The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
+
+  ```hcl
+  {{ include "checkov-security-scan/example-plan/results_cli.txt" }}
+  ```
+
+
 
 #output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
 #  file: "README.md"           # Create README.md in the root.
