@@ -30,7 +30,7 @@ content: |-                     # Customize the outputted file
   This example configuration module would use this repository to create and manage the resource. Read the help text carefully to understand what you need to edit before running the code.                
 
   ```hcl
-  {{ include "examples/main.tf" }}
+  {{ include "example/main.tf" }}
   ```
 
   # Checkov Security Scan Results - module
