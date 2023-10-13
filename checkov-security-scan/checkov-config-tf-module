@@ -10,7 +10,7 @@ framework:
 mask: []
 output:
 - cli
-output-file-path: ./checkov-security-scan/
+output-file-path: ./checkov-security-scan/module/
 secrets-history-timeout: 12h
 secrets-scan-file-type: []
 soft-fail: true

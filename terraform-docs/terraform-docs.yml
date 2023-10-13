@@ -33,11 +33,11 @@ content: |-                     # Customize the outputted file
   {{ include "examples/main.tf" }}
   ```
 
-  # Checkov Security Scan Results
+  # Checkov Security Scan Results - module
   The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
 
   ```hcl
-  {{ include "checkov-security-scan/results_cli.txt" }}
+  {{ include "checkov-security-scan/module/results_cli.txt" }}
   ```
  
 #output:                       # Save generated output to a file, if output.file is not empty. output.file can be relative to module root or an absolute path.
