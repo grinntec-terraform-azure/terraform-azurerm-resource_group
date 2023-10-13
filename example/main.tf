@@ -19,8 +19,6 @@ provider "azurerm" {
 # TERRAFORM CONFIGURATION
 ############################################################
 # Backend configuration for remote state in Azure Blob Storage
-# Comment out if using
-/*
 terraform {
   backend "azurerm" {
     resource_group_name   = "terraform-state"
@@ -29,16 +27,14 @@ terraform {
     key                   = "main.terraform.tfstate"
   }
 }
-*/
 
 
 ############################################################
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  #source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" // uncommen to use GitHub repo as source
-  source =  "../" // This source is used for testing the plan using GitHub actions, not for production
-
+  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+  
   # Provide values for the module's variables
   app_name    = "myapp"
   environment = "dev"
