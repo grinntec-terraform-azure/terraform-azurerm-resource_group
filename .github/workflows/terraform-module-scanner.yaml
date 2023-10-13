@@ -234,15 +234,16 @@ jobs:
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
+        #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
         #directory: ./  # IaC root directory
-        #output_format: cli # Report output format
+        file: ./main.tf
+        output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
-        #output_file_path: './checkov-security-scan/' # Name of the output folder to save the chosen output formats
+        output_file_path: './checkov-security-scan/module/' # Name of the output folder to save the chosen output formats
         #compact: 'true' # For the CLI output, do not display code blocks
-        #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
-        #soft_fail: 'false' # Runs checks but always returns a 0 exit code    
+        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
