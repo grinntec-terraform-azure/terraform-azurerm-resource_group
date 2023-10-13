@@ -38,161 +38,161 @@ env:
 
 jobs:
 
+##### ------------------------------------------ ###
+### TERRAFORM FMT & VALIDATE
+##### ------------------------------------------ ###
+## Set up the Terraform environment on the runner machine and
+## validate the Terraform code to ensure that it is ready for 
+## further deployment or management of infrastructure resources
+##
+## If the terraform validate command fails, subsequent steps in
+## the workflow will not execute.
+#
+## Job definition for running Terraform formatting and validation checks.
+#  terraform-fmt-validate:
+#    name: 'Terraform FMT & Validate'
+#    runs-on: ubuntu-latest
+#    env:
+#    # Provide the GitHub token to allow access to repository-related functionalities.
+#      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#    steps:
+#    
+#  ## Check out the code to the runner environment where the workflow is running
+#    - name: Checkout the repository
+#      uses: actions/checkout@v3
+#      with:
+#        ref: main
+#  
+#  ## Pull any changes down to the working directory      
+#    - name: Pull latest changes
+#      run: git pull origin main
+#        
+#  ## Install Terraform CLI on the runner machine
+#    - name: Setup Terraform on the runner
+#      uses: hashicorp/setup-terraform@v2.0.3
+#
+## This step is responsible for initializing, formatting, and validating the Terraform code.
+## 
+## 1. `terraform init -backend=false`: 
+##    - Initializes the Terraform working directory.
+##    - Downloads the required provider plugins.
+##    - The `-backend=false` option disables backend configuration, which means Terraform will use a local backend.
+##      This means the Terraform state will be stored on the runner machine where the workflow is executed.
+##
+## 2. `terraform fmt`: 
+##    - Automatically formats the Terraform code to adhere to a canonical format and style.
+##
+## 3. `terraform validate`: 
+##    - Validates the Terraform code's syntax and checks for any errors.
+#    - name: Terraform init, fmt, & validate
+#      run: |
+#        terraform init -backend=false; terraform fmt; terraform validate
+#        
+#  ## Commit the results to a sub-folder in the repository
+#    - name: Commit any changes to this repository
+#      uses: EndBug/add-and-commit@v9.1.1
+#      with:
+#        add: '.'
+#        author_name: 'GitHub Action - terraform-module-scanner'
+#        message: 'Resulting from Terraform init, fmt, & validate'    
+#
+#  ## Push changes to the main branch.
+#  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+#  ## environment variable.
+#    - name: Push changes to main branch
+#      uses: ad-m/github-push-action@master
+#      with:
+#        branch: main
+#        directory: ./
+#        github_token: ${{ env.GITHUB_TOKEN }}
+
 #### ------------------------------------------ ###
-## TERRAFORM FMT & VALIDATE
+## TFLint
 #### ------------------------------------------ ###
-# Set up the Terraform environment on the runner machine and
-# validate the Terraform code to ensure that it is ready for 
-# further deployment or management of infrastructure resources
+## Lint Terraform configurations using TFLint
+#  tflint:
+#    name: 'TFLint'
+#    runs-on: ubuntu-latest
+#    env:
+#    # Provide the GitHub token to allow access to repository-related functionalities.
+#      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    needs: [terraform-fmt-validate]
 #
-# If the terraform validate command fails, subsequent steps in
-# the workflow will not execute.
-
-# Job definition for running Terraform formatting and validation checks.
-  terraform-fmt-validate:
-    name: 'Terraform FMT & Validate'
-    runs-on: ubuntu-latest
-    env:
-    # Provide the GitHub token to allow access to repository-related functionalities.
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-    
-  ## Check out the code to the runner environment where the workflow is running
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-      with:
-        ref: main
-  
-  ## Pull any changes down to the working directory      
-    - name: Pull latest changes
-      run: git pull origin main
-        
-  ## Install Terraform CLI on the runner machine
-    - name: Setup Terraform on the runner
-      uses: hashicorp/setup-terraform@v2.0.3
-
-# This step is responsible for initializing, formatting, and validating the Terraform code.
-# 
-# 1. `terraform init -backend=false`: 
-#    - Initializes the Terraform working directory.
-#    - Downloads the required provider plugins.
-#    - The `-backend=false` option disables backend configuration, which means Terraform will use a local backend.
-#      This means the Terraform state will be stored on the runner machine where the workflow is executed.
+#    steps:
 #
-# 2. `terraform fmt`: 
-#    - Automatically formats the Terraform code to adhere to a canonical format and style.
+#    # Check out the code to the runner environment where the workflow is running
+#    - name: Checkout the repository
+#      uses: actions/checkout@v3
+#      with:
+#        ref: main
+#    
+#    ## Pull any changes down to the working directory      
+#    - name: Pull latest changes
+#      run: git pull origin main
 #
-# 3. `terraform validate`: 
-#    - Validates the Terraform code's syntax and checks for any errors.
-    - name: Terraform init, fmt, & validate
-      run: |
-        terraform init -backend=false; terraform fmt; terraform validate
-        
-  ## Commit the results to a sub-folder in the repository
-    - name: Commit any changes to this repository
-      uses: EndBug/add-and-commit@v9.1.1
-      with:
-        add: '.'
-        author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'Resulting from Terraform init, fmt, & validate'    
-
-  ## Push changes to the main branch.
-  ## Requires authentication, which is provided through a GITHUB_TOKEN 
-  ## environment variable.
-    - name: Push changes to main branch
-      uses: ad-m/github-push-action@master
-      with:
-        branch: main
-        directory: ./
-        github_token: ${{ env.GITHUB_TOKEN }}
-
-### ------------------------------------------ ###
-# TFLint
-### ------------------------------------------ ###
-# Lint Terraform configurations using TFLint
-  tflint:
-    name: 'TFLint'
-    runs-on: ubuntu-latest
-    env:
-    # Provide the GitHub token to allow access to repository-related functionalities.
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: [terraform-fmt-validate]
-
-    steps:
-
-    # Check out the code to the runner environment where the workflow is running
-    - name: Checkout the repository
-      uses: actions/checkout@v3
-      with:
-        ref: main
-    
-    ## Pull any changes down to the working directory      
-    - name: Pull latest changes
-      run: git pull origin main
-
-    # Caching TFLint plugins to optimize workflow execution time.
-    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
-    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
-    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
-    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
-    - name: Setup TFLint cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
-    # Set up and install the specified version of TFLint
-    - name: Install TFLint v0.44.1
-      uses: terraform-linters/setup-tflint@v3
-      with:
-        tflint_version: v0.44.1
-
-    # Set up TFLint plugins using the provided configuration file.
-    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
-    # The tflint.hcl patch is relative to the repository where the action is run
-    # The tflint.hcl file can be changed according to what you're linting
-    # By default it'll have the azure and aws libraries
-    - name: Initialize TFLint Plugins
-      run: tflint --init --config ./tflint/tflint.hcl
-      env:
-        # Provide the GitHub token to allow TFLint to access any required GitHub resources.
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
-    - name: Execute TFLint and Store Results
-    # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
-      #continue-on-error: true
-  
-      run: |
-        # Execute TFLint without output redirection to display potential error messages directly in the workflow logs.
-        tflint -f compact --config ./tflint/tflint.hcl || true
-          
-        # Capture the current date and time to create a unique timestamp for the results file.
-        TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
-        
-        # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.
-        tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-$TIMESTAMP.txt
-
-    # Commit the TFLint results file(s) to the repository.
-    # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
-    - name: Commit TFLint Results
-      uses: EndBug/add-and-commit@v9.1.1
-      with:
-        # Specify the path pattern to the TFLint results files that need to be added to the commit.
-        add: './tflint/tflint-results-*.txt'
-        author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'Resulting from TFLint'    
-  
-  ## Push changes to the main branch.
-  ## Requires authentication, which is provided through a GITHUB_TOKEN 
-  ## environment variable.
-    - name: Push changes to main branch
-      uses: ad-m/github-push-action@master
-      with:
-        branch: main
-        directory: ./
-        github_token: ${{ env.GITHUB_TOKEN }}
+#    # Caching TFLint plugins to optimize workflow execution time.
+#    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
+#    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
+#    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
+#    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
+#    - name: Setup TFLint cache
+#      uses: actions/cache@v3
+#      with:
+#        path: ~/.tflint.d/plugins
+#        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+#
+#    # Set up and install the specified version of TFLint
+#    - name: Install TFLint v0.44.1
+#      uses: terraform-linters/setup-tflint@v3
+#      with:
+#        tflint_version: v0.44.1
+#
+#    # Set up TFLint plugins using the provided configuration file.
+#    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
+#    # The tflint.hcl patch is relative to the repository where the action is run
+#    # The tflint.hcl file can be changed according to what you're linting
+#    # By default it'll have the azure and aws libraries
+#    - name: Initialize TFLint Plugins
+#      run: tflint --init --config ./tflint/tflint.hcl
+#      env:
+#        # Provide the GitHub token to allow TFLint to access any required GitHub resources.
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#    # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
+#    - name: Execute TFLint and Store Results
+#    # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
+#      #continue-on-error: true
+#  
+#      run: |
+#        # Execute TFLint without output redirection to display potential error messages directly in the workflow logs.
+#        tflint -f compact --config ./tflint/tflint.hcl || true
+#          
+#        # Capture the current date and time to create a unique timestamp for the results file.
+#        TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
+#        
+#        # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.
+#        tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-$TIMESTAMP.txt
+#
+#    # Commit the TFLint results file(s) to the repository.
+#    # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
+#    - name: Commit TFLint Results
+#      uses: EndBug/add-and-commit@v9.1.1
+#      with:
+#        # Specify the path pattern to the TFLint results files that need to be added to the commit.
+#        add: './tflint/tflint-results-*.txt'
+#        author_name: 'GitHub Action - terraform-module-scanner'
+#        message: 'Resulting from TFLint'    
+#  
+#  ## Push changes to the main branch.
+#  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+#  ## environment variable.
+#    - name: Push changes to main branch
+#      uses: ad-m/github-push-action@master
+#      with:
+#        branch: main
+#        directory: ./
+#        github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN - MODULE
