@@ -278,6 +278,7 @@ jobs:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #needs: [terraform-fmt-validate,tflint]
+    needs: [checkov-security-scan-module]
 
     steps:
     
