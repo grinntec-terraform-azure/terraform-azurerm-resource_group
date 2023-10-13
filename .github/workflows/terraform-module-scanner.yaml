@@ -206,7 +206,7 @@ jobs:
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: [terraform-fmt-validate,TFLint]
+    #needs: [terraform-fmt-validate,tflint]
 
     steps:
     
@@ -221,16 +221,16 @@ jobs:
       run: git pull origin main
 
     # Ensure the 'checkov' directory exists
-    - name: Manage 'checkov' directory
-      run: mkdir -p checkov
+    #- name: Manage 'checkov' directory
+    #  run: mkdir -p checkov
 
     # Generate the timestamped file path for the Checkov scan results
     #- name: Generate Checkov output file path
       #run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
     
 
-# Run a security scan on the Terraform code using the Checkov tool.
-# Generate a report of security issues that were found.
+    # Run a security scan on the Terraform code using the Checkov tool.
+    # Generate a report of security issues that were found.
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
@@ -249,7 +249,7 @@ jobs:
       uses: EndBug/add-and-commit@v9.1.1
       with:
         #add: './checkov/checkov-security-scan-*.txt'
-        add: './checkov/*'
+        add: './checkov-security-scan/*'
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from checkov'    
 
