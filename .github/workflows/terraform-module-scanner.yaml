@@ -130,7 +130,7 @@ jobs:
   tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
-    env:
+    #env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [setup-repo, terraform-fmt-validate]
