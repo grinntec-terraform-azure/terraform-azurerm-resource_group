@@ -1,7 +1,7 @@
 
 
 <!-- BEGIN_TF_DOCS -->
-![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
+![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
 # Azure Resource Group Terraform Module
 
 This Terraform module is designed to provision an Azure Resource Group.
@@ -120,6 +120,30 @@ output "resource_group_location" {
 The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
 
 ```hcl
+
+```
+
+# Checkov Security Scan Results - example
+The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
+
+```hcl
+terraform scan results:
+
+Passed checks: 0, Failed checks: 1, Skipped checks: 0
+
+Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
+	FAILED for resource: azure_resource_group
+	File: /main.tf:35-42
+	Guide: [1mhttps://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision.html
+
+		[37m35 | [33mmodule "azure_resource_group" {
+		[37m36 | [33m  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" # Adjust this path to where your module is located
+		[37m37 | [33m
+		[37m38 |   # Provide values for the module's variables
+		[37m39 | [33m  app_name    = "myapp"
+		[37m40 | [33m  environment = "dev"
+		[37m41 | [33m  location    = "westeurope"
+		[37m42 | [33m}
 
 ```
 <!-- END_TF_DOCS -->
