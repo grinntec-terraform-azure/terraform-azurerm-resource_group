@@ -1,0 +1,18 @@
+terraform scan results:
+
+Passed checks: 0, Failed checks: 1, Skipped checks: 0
+
+Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
+	FAILED for resource: azure_resource_group
+	File: /main.tf:35-42
+	Guide: https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision.html
+
+		35 | module "azure_resource_group" {
+		36 |   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+		37 | 
+		38 |   # Provide values for the module's variables
+		39 |   app_name    = "myapp"
+		40 |   environment = "dev"
+		41 |   location    = "westeurope"
+		42 | }
+
