@@ -53,10 +53,6 @@ jobs:
   terraform-fmt-validate:
     name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
-    #env:
-    # Provide the GitHub token to allow access to repository-related functionalities.
-     # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
     
   ## Check out the code to the runner environment where the workflow is running
@@ -113,11 +109,7 @@ jobs:
   tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
-    #env:
-    # Provide the GitHub token to allow access to repository-related functionalities.
-      #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [terraform-fmt-validate]
-
     steps:
 
     # Check out the code to the runner environment where the workflow is running
@@ -150,9 +142,9 @@ jobs:
     # By default it'll have the azure and aws libraries
     - name: Initialize TFLint Plugins
       run: tflint --init --config ./tflint/tflint.hcl
-      env:
-        # Provide the GitHub token to allow TFLint to access any required GitHub resources.
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #env:
+      #  # Provide the GitHub token to allow TFLint to access any required GitHub resources.
+      #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results
