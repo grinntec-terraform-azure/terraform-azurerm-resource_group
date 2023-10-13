@@ -1,4 +1,10 @@
+![workflow name](https://github.com/username/repository/actions/workflows/main.yml/badge.svg)
 
+![workflow name](https://github.com/grinntec-terraform-azure/terraform-azurerm-resource_group/actions/workflows/terraform-module-scanner.yaml/badge.svg)
+
+/blob/main/.github/workflows/terraform-module-scanner.yaml
+
+.github/workflows/terraform-module-scanner.yaml
 
 <!-- BEGIN_TF_DOCS -->
 ![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
