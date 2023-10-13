@@ -309,7 +309,7 @@ jobs:
         #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
         #directory: ./  # IaC root directory
         file: ./examples/main.tf
-        output_format: sarif # Report output format
+        output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
         output_file_path: './checkov-security-scan/examples/' # Name of the output folder to save the chosen output formats
         #compact: 'true' # For the CLI output, do not display code blocks
