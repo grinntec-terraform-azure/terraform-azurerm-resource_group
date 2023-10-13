@@ -117,7 +117,7 @@ jobs:
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: [terraform-fmt-validate]
+    #needs: [terraform-fmt-validate]
 
     steps:
 
