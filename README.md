@@ -116,6 +116,13 @@ output "resource_group_location" {
 
 ```
 
+# TFLint Results
+The results of the most recent TFLint. If there is no data, then there are no issues logged.
+
+```hcl
+
+```
+
 # Checkov Security Scan Results - module
 The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
 
