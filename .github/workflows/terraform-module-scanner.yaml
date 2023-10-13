@@ -234,14 +234,14 @@ jobs:
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        directory: ./
-        framework: terraform
-        output_format: cli
+        directory: ./  # IaC root directory
+        output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
-        output_file_path: './checkov/'
-        soft_fail: 'true'
+        output_file_path: './checkov-security-scan/' # Name of the output folder to save the chosen output formats
+        #compact: 'true' # For the CLI output, do not display code blocks
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
-        compact: 'true'
+        soft_fail: 'false' # Runs checks but always returns a 0 exit code    
 
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
@@ -249,7 +249,7 @@ jobs:
       uses: EndBug/add-and-commit@v9.1.1
       with:
         #add: './checkov/checkov-security-scan-*.txt'
-        add: './checkov/checkov-security-scan.txt'
+        add: './checkov/*'
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from checkov'    
 
