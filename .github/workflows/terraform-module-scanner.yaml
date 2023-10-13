@@ -163,16 +163,9 @@ jobs:
     - name: Execute TFLint and Store Results
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       #continue-on-error: true
-  
-      run: |
-        # Execute TFLint without output redirection to display potential error messages directly in the workflow logs.
-        tflint -f compact --config ./tflint/tflint.hcl || true
-         
-        # Capture the current date and time to create a unique timestamp for the results file.
-        TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
-        
-        # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.
-        tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-$TIMESTAMP.txt
+
+      # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
+      run: tflint -f compact --config ./tflint/tflint.hcl > ./tflint/tflint-results.txt
 
     # Commit the TFLint results file(s) to the repository.
     # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
