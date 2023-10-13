@@ -1,7 +1,7 @@
 
 
 <!-- BEGIN_TF_DOCS -->
-![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
+![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
 # Azure Resource Group Terraform Module
 
 This Terraform module is designed to provision an Azure Resource Group.
@@ -116,7 +116,7 @@ output "resource_group_location" {
 
 ```
 
-# Checkov Security Scan Results
+# Checkov Security Scan Results - module
 The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
 
 ```hcl
