@@ -272,7 +272,7 @@ jobs:
 # Commit the results to the repository.
 
   checkov-security-scan-example:
-    name: 'Checkov Security Scan - Module'
+    name: 'Checkov Security Scan - Example'
     runs-on: ubuntu-latest
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
@@ -345,7 +345,7 @@ jobs:
     env:
     # Provide the GitHub token to allow access to repository-related functionalities.
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    needs: checkov-security-scan
+    needs: [checkov-security-scan-module, checkov-security-scan-example]
     
     steps:
 
@@ -503,7 +503,7 @@ jobs:
     
     # Dependencies: This job depends on the completion of the following jobs.
     #needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
-    needs: [checkov-security-scan, create-readme, terraform-docs, readme-badges]
+    needs: [checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Failure Notification to Slack
@@ -554,7 +554,7 @@ jobs:
     
     # Dependencies: This job depends on the completion of the following jobs.
     #needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
-    needs: [checkov-security-scan, create-readme, terraform-docs, readme-badges]
+    needs: [checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
     
     steps:
     - name: Send Success Notification to Slack
