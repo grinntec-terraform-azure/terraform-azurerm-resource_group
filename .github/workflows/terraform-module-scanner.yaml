@@ -234,7 +234,7 @@ jobs:
     - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        config_file: './checkov-security-scan/checkov-config-tf-module'
+        config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
         #directory: ./  # IaC root directory
         #output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
