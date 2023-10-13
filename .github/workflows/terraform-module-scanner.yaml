@@ -34,20 +34,17 @@ on:
 
 env:
   SLACK_CHANNEL_ID: 'C060DK2BWQM' # Define the Slack channel ID here
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-# ${{ secrets.GITHUB_TOKEN }} is an automatically generated secret provided by GitHub for use in GitHub Actions.
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # An automatically generated secret provided by GitHub for use in GitHub Actions.
 
 jobs:
 
 #### ------------------------------------------ ###
 ## TERRAFORM FMT & VALIDATE
 #### ------------------------------------------ ###
-# Set up the Terraform environment on the runner machine and
-# validate the Terraform code to ensure that it is ready for 
-# further deployment or management of infrastructure resources
+# Set up the Terraform environment on the runner machine and validate the Terraform code to ensure that it is ready for 
+# further deployment or management of infrastructure resources.
 #
-# If the terraform validate command fails, subsequent steps in
-# the workflow will not execute.
+# If the terraform validate command fails, subsequent steps in the workflow will not execute.
 
 # Job definition for running Terraform formatting and validation checks.
   terraform-fmt-validate:
@@ -84,17 +81,17 @@ jobs:
         terraform fmt
         terraform validate
         
-  ## Commit the results to a sub-folder in the repository
+    ## Commit the results to a sub-folder in the repository
     - name: Commit any changes to this repository
       uses: EndBug/add-and-commit@v9.1.1
       with:
         add: '.'
         author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'Resulting from Terraform init, fmt, & validate'    
+        message: 'TERRAFORM FMT & VALIDATE'    
 
-  ## Push changes to the main branch.
-  ## Requires authentication, which is provided through a GITHUB_TOKEN 
-  ## environment variable.
+    ## Push changes to the main branch.
+    ## Requires authentication, which is provided through a GITHUB_TOKEN 
+    ## environment variable.
     - name: Push changes to main branch
       uses: ad-m/github-push-action@master
       with:
@@ -142,9 +139,6 @@ jobs:
     # By default it'll have the azure and aws libraries
     - name: Initialize TFLint Plugins
       run: tflint --init --config ./tflint/tflint.hcl
-      #env:
-      #  # Provide the GitHub token to allow TFLint to access any required GitHub resources.
-      #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results
@@ -164,9 +158,9 @@ jobs:
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from TFLint'    
   
-  ## Push changes to the main branch.
-  ## Requires authentication, which is provided through a GITHUB_TOKEN 
-  ## environment variable.
+    ## Push changes to the main branch.
+    ## Requires authentication, which is provided through a GITHUB_TOKEN 
+    ## environment variable.
     - name: Push changes to main branch
       uses: ad-m/github-push-action@master
       with:
@@ -183,9 +177,6 @@ jobs:
   checkov-security-scan-module:
     name: 'Checkov Security Scan - Module'
     runs-on: ubuntu-latest
-    #env:
-    # Provide the GitHub token to allow access to repository-related functionalities.
-      #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [tflint]
     steps:
     
@@ -242,9 +233,6 @@ jobs:
   checkov-security-scan-example:
     name: 'Checkov Security Scan - Example'
     runs-on: ubuntu-latest
-    #env:
-    ## Provide the GitHub token to allow access to repository-related functionalities.
-    #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [checkov-security-scan-module]
     steps:
     
@@ -273,8 +261,8 @@ jobs:
     - name: Clean Checkov Output
       run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/example/results_cli.txt
 
-# Add the Checkov scan report to the repository and commit it with a commit message.
-# This action requires authentication, which is provided through GITHUB_TOKEN.
+    # Add the Checkov scan report to the repository and commit it with a commit message.
+    # This action requires authentication, which is provided through GITHUB_TOKEN.
     - name: Commit the results
       uses: EndBug/add-and-commit@v9.1.1
       with:
@@ -283,9 +271,9 @@ jobs:
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'CHECKOV SECURITY SCAN - EXAMPLE'    
 
-  ## Push changes to the main branch.
-  ## Requires authentication, which is provided through a GITHUB_TOKEN 
-  ## environment variable.
+    ## Push changes to the main branch.
+    ## Requires authentication, which is provided through a GITHUB_TOKEN 
+    ## environment variable.
     - name: Push changes to main branch
       uses: ad-m/github-push-action@master
       with:
@@ -299,9 +287,6 @@ jobs:
   create-readme:
     name: 'Create Readme'
     runs-on: ubuntu-latest
-    #env:
-    ## Provide the GitHub token to allow access to repository-related functionalities.
-    #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     needs: [checkov-security-scan-module, checkov-security-scan-example]
     steps:
 
@@ -327,7 +312,45 @@ jobs:
         # Specify the configuration file for 'terraform-docs'
         config-file: ./terraform-docs/terraform-docs.yml
         # Enable pushing the updated README.md back to the pull request branch
-        git-push: "true"
+        git-push: "false"
+    
+    # Fetch all tags from the remote repository.
+    # This ensures that the local repository has an up-to-date list of all tags available in the remote.
+    - name: Fetch All Tags from Remote
+      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      
+    # Retrieve the latest tag from the git history.
+    # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
+    # variable for subsequent steps.
+    - name: Retrieve Latest Git Tag
+      id: latesttag
+      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
+
+    # Update the README.md file to reflect the latest git tag.
+    # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
+    # it with the latest tag obtained from the previous step.
+    - name: Update Badge in readme with Git Tag
+      run: |
+        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
+
+    # Add the Checkov scan report to the repository and commit it with a commit message.
+    # This action requires authentication, which is provided through GITHUB_TOKEN.
+    - name: Commit the results
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        add: 'README.md'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from terraform-docs'    
+    
+    # Push changes to the main branch.
+    # Requires authentication, which is provided through a GITHUB_TOKEN 
+    # environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
 
     ## Add the Checkov scan report to the repository and commit it with a commit message.
     ## This action requires authentication, which is provided through GITHUB_TOKEN.
@@ -393,64 +416,64 @@ jobs:
 # modules in the README.md file, and push the changes back to 
 # the pull request branch in GitHub.
 
-  readme-badges:
-      name: 'Readme Badges'
-      runs-on: ubuntu-latest
-      env:
-      # Provide the GitHub token to allow access to repository-related functionalities.
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #needs: terraform-docs
-      needs: [create-readme]
-      steps:
-    
-      # Check out the code to the runner environment where the workflow is running
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          ref: main
-
-      # Pull any changes down to the working directory      
-      - name: Pull latest changes
-        run: git pull origin main
-
-    
-      # Fetch all tags from the remote repository.
-      # This ensures that the local repository has an up-to-date list of all tags available in the remote.
-      - name: Fetch All Tags from Remote
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      
-      # Retrieve the latest tag from the git history.
-      # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
-      # variable for subsequent steps.
-      - name: Retrieve Latest Git Tag
-        id: latesttag
-        run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
-
-      # Update the README.md file to reflect the latest git tag.
-      # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
-      # it with the latest tag obtained from the previous step.
-      - name: Update Badge in readme with Git Tag
-        run: |
-          sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
-
-      # Add the Checkov scan report to the repository and commit it with a commit message.
-      # This action requires authentication, which is provided through GITHUB_TOKEN.
-      - name: Commit the results
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          add: 'README.md'
-          author_name: 'GitHub Action - terraform-module-scanner'
-          message: 'Resulting from terraform-docs'    
-    
-      # Push changes to the main branch.
-      # Requires authentication, which is provided through a GITHUB_TOKEN 
-      # environment variable.
-      - name: Push changes to main branch
-        uses: ad-m/github-push-action@master
-        with:
-          branch: main
-          directory: ./
-          github_token: ${{ env.GITHUB_TOKEN }}
+#  readme-badges:
+#      name: 'Readme Badges'
+#      runs-on: ubuntu-latest
+#      env:
+#      # Provide the GitHub token to allow access to repository-related functionalities.
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      #needs: terraform-docs
+#      needs: [create-readme]
+#      steps:
+#    
+#      # Check out the code to the runner environment where the workflow is running
+#      - name: Checkout the repository
+#        uses: actions/checkout@v3
+#        with:
+#          ref: main
+#
+#      # Pull any changes down to the working directory      
+#      - name: Pull latest changes
+#        run: git pull origin main
+#
+#    
+#      # Fetch all tags from the remote repository.
+#      # This ensures that the local repository has an up-to-date list of all tags available in the remote.
+#      - name: Fetch All Tags from Remote
+#        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+#      
+#      # Retrieve the latest tag from the git history.
+#      # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
+#      # variable for subsequent steps.
+#      - name: Retrieve Latest Git Tag
+#        id: latesttag
+#        run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
+#
+#      # Update the README.md file to reflect the latest git tag.
+#      # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
+#      # it with the latest tag obtained from the previous step.
+#      - name: Update Badge in readme with Git Tag
+#        run: |
+#          sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
+#
+#      # Add the Checkov scan report to the repository and commit it with a commit message.
+#      # This action requires authentication, which is provided through GITHUB_TOKEN.
+#      - name: Commit the results
+#        uses: EndBug/add-and-commit@v9.1.1
+#        with:
+#          add: 'README.md'
+#          author_name: 'GitHub Action - terraform-module-scanner'
+#          message: 'Resulting from terraform-docs'    
+#    
+#      # Push changes to the main branch.
+#      # Requires authentication, which is provided through a GITHUB_TOKEN 
+#      # environment variable.
+#      - name: Push changes to main branch
+#        uses: ad-m/github-push-action@master
+#        with:
+#          branch: main
+#          directory: ./
+#          github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
 # NOTIFY SLACK
@@ -466,7 +489,8 @@ jobs:
     
     # Dependencies: This job depends on the completion of the following jobs.
     #needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
-    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, readme-badges]
+    #needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, readme-badges]
+    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme]
     
     steps:
     - name: Send Failure Notification to Slack
@@ -518,7 +542,8 @@ jobs:
     # Dependencies: This job depends on the completion of the following jobs.
     #needs: [terraform-fmt-validate, tflint, checkov-security-scan, create-readme, terraform-docs, readme-badges]
     #needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, terraform-docs, readme-badges]
-    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, readme-badges]
+    #needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme, readme-badges]
+    needs: [terraform-fmt-validate, tflint,checkov-security-scan-module, checkov-security-scan-example, create-readme]
     
     steps:
     - name: Send Success Notification to Slack
