@@ -33,7 +33,7 @@ terraform {
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" # Adjust this path to where your module is located
+  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
 
   # Provide values for the module's variables
   app_name    = "myapp"

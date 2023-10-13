@@ -245,6 +245,10 @@ jobs:
         #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
+     # Strip out ANSI codes from the Checkov scan results
+    - name: Clean Checkov Output
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/module/results_cli.txt
+
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
     - name: Commit the results
@@ -308,10 +312,10 @@ jobs:
       with:
         #config_file: './checkov-security-scan/checkov-config-tf-module.yaml'
         #directory: ./  # IaC root directory
-        file: ./examples/main.tf
+        file: ./example/main.tf
         output_format: cli # Report output format
         #output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
-        output_file_path: './checkov-security-scan/examples/' # Name of the output folder to save the chosen output formats
+        output_file_path: './checkov-security-scan/example/' # Name of the output folder to save the chosen output formats
         #compact: 'true' # For the CLI output, do not display code blocks
         framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         #skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
@@ -319,7 +323,7 @@ jobs:
 
      # Strip out ANSI codes from the Checkov scan results
     - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/examples/results_cli.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/example/results_cli.txt
 
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
