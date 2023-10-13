@@ -1,7 +1,7 @@
 
 
 <!-- BEGIN_TF_DOCS -->
-![Version Badge](https://img.shields.io/badge/Tag-0.0.1-blue)
+![Version Badge](https://img.shields.io/badge/Tag-0.0.0-blue)
 # Azure Resource Group Terraform Module
 
 This Terraform module is designed to provision an Azure Resource Group.
@@ -91,7 +91,7 @@ terraform {
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" # Adjust this path to where your module is located
+  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
 
   # Provide values for the module's variables
   app_name    = "myapp"
@@ -137,7 +137,7 @@ Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
 	Guide: https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision.html
 
 		35 | module "azure_resource_group" {
-		36 |   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1" # Adjust this path to where your module is located
+		36 |   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
 		37 | 
 		38 |   # Provide values for the module's variables
 		39 |   app_name    = "myapp"
