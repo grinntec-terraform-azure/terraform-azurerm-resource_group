@@ -9,7 +9,7 @@
 # - Checks Code using TFLInt
 # - Scans for security issues using CHECKOV
 # - Creates/updates README.md using Terraform Docs
-# - Sends a Slack message if any of the steps fail
+# - Sends a Slack message if any of the steps fail or if successful
 
 name: 'Terraform Module Scanner'
 
@@ -169,13 +169,13 @@ jobs:
         github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
-# CHECKOV SECURITY SCAN - MODULE
+# CHECKOV SECURITY SCAN
 ### ------------------------------------------ ###
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 
   checkov-security-scan-module:
-    name: 'Checkov Security Scan - Module'
+    name: 'Checkov Security Scan'
     runs-on: ubuntu-latest
     needs: [tflint]
     steps:
@@ -223,7 +223,7 @@ jobs:
       with:
         add: './checkov-security-scan/*'
         author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'CHECKOV SECURITY SCAN - MODULE'    
+        message: 'CHECKOV SECURITY SCAN'    
 
   ## Push changes to the main branch.
   ## Requires authentication, which is provided through a GITHUB_TOKEN 
@@ -294,7 +294,7 @@ jobs:
       with:
         add: 'README.md'
         author_name: 'GitHub Action - terraform-module-scanner'
-        message: 'Resulting from terraform-docs'    
+        message: 'CREATE README'    
     
     # Push changes to the main branch.
     # Requires authentication, which is provided through a GITHUB_TOKEN 
