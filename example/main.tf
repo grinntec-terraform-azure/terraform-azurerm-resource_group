@@ -19,6 +19,8 @@ provider "azurerm" {
 # TERRAFORM CONFIGURATION
 ############################################################
 # Backend configuration for remote state in Azure Blob Storage
+# Comment out if using
+/*
 terraform {
   backend "azurerm" {
     resource_group_name   = "terraform-state"
@@ -27,6 +29,7 @@ terraform {
     key                   = "main.terraform.tfstate"
   }
 }
+*/
 
 
 ############################################################
