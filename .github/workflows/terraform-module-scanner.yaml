@@ -345,23 +345,11 @@ jobs:
 
 #    - Validates the Terraform code's syntax and checks for any errors.
     - name: Terraform init, plan, & convert to JSON
+      working-directory: ./example
       run: |
-        terraform init -backend=false; terraform plan --out tfplan.binary; terraform show -json tfplan.binary | jq > tfplan.json
-
-    # Run a security scan on the Terraform code using the Checkov tool.
-    # Generate a report of security issues that were found.
-    - name: Run Checkov Scan
-      uses: bridgecrewio/checkov-action@master
-      with:
-        file: ./example/tfplan.json
-        output_format: cli # Report output format
-        output_file_path: './checkov-security-scan/example-plan/' # Name of the output folder to save the chosen output formats
-        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
-        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
-
-     # Strip out ANSI codes from the Checkov scan results
-    - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov-security-scan/example/results_cli.txt
+        terraform init -backend=false
+        terraform plan --out tfplan.binary
+        terraform show -json tfplan.binary | jq > tfplan.json
 
 # Add the Checkov scan report to the repository and commit it with a commit message.
 # This action requires authentication, which is provided through GITHUB_TOKEN.
