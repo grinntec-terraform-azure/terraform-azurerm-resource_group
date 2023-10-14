@@ -65,6 +65,8 @@ resource "azurerm_resource_group" "this" {
 ############################################################
 # VARIABLES
 ############################################################
+
+# Common variables
 variable "location" {
   type        = string
   description = <<EOT
