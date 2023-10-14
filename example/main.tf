@@ -3,13 +3,13 @@
 ############################################################
 # Provider configuration in the root module
 provider "azurerm" {
-  
+
   # Specify specific parts of the target environment if not configured as environment variables
-    #subscription_id = "your-subscription-id" // The target Azure subscription
-    #client_id = "your-client-id" // Avoid hard-coding security credentials
-    #client_secret = "your-client-secret" // Avoid hard-coding security credentials
-    #tenant_id = "your-tenant-id" // The Azure AD tenant
-    
+  #subscription_id = "your-subscription-id" // The target Azure subscription
+  #client_id = "your-client-id" // Avoid hard-coding security credentials
+  #client_secret = "your-client-secret" // Avoid hard-coding security credentials
+  #tenant_id = "your-tenant-id" // The Azure AD tenant
+
   # Features block is required for azurerm provider
   features {}
 }
@@ -35,7 +35,7 @@ provider "azurerm" {
 module "azure_resource_group" {
   #source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
   source = "../."
-  
+
   # Provide values for the module's variables
   app_name    = "myapp"
   environment = "dev"
