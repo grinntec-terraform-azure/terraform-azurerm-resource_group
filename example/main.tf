@@ -19,21 +19,22 @@ provider "azurerm" {
 # TERRAFORM CONFIGURATION
 ############################################################
 # Backend configuration for remote state in Azure Blob Storage
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "terraform-state"
-    storage_account_name  = "tfstateaccountsandbox"
-    container_name        = "tfstatecontainer"
-    key                   = "main.terraform.tfstate"
-  }
-}
+#terraform {
+#  backend "azurerm" {
+#    resource_group_name   = "terraform-state"
+#    storage_account_name  = "tfstateaccountsandbox"
+#    container_name        = "tfstatecontainer"
+#    key                   = "main.terraform.tfstate"
+#  }
+#}
 
 
 ############################################################
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+  #source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+  source = "../."
   
   # Provide values for the module's variables
   app_name    = "myapp"
