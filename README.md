@@ -61,13 +61,13 @@ This example configuration module would use this repository to create and manage
 ############################################################
 # Provider configuration in the root module
 provider "azurerm" {
-  
+
   # Specify specific parts of the target environment if not configured as environment variables
-    #subscription_id = "your-subscription-id" // The target Azure subscription
-    #client_id = "your-client-id" // Avoid hard-coding security credentials
-    #client_secret = "your-client-secret" // Avoid hard-coding security credentials
-    #tenant_id = "your-tenant-id" // The Azure AD tenant
-    
+  #subscription_id = "your-subscription-id" // The target Azure subscription
+  #client_id = "your-client-id" // Avoid hard-coding security credentials
+  #client_secret = "your-client-secret" // Avoid hard-coding security credentials
+  #tenant_id = "your-tenant-id" // The Azure AD tenant
+
   # Features block is required for azurerm provider
   features {}
 }
@@ -77,22 +77,23 @@ provider "azurerm" {
 # TERRAFORM CONFIGURATION
 ############################################################
 # Backend configuration for remote state in Azure Blob Storage
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "terraform-state"
-    storage_account_name  = "tfstateaccountsandbox"
-    container_name        = "tfstatecontainer"
-    key                   = "main.terraform.tfstate"
-  }
-}
+#terraform {
+#  backend "azurerm" {
+#    resource_group_name   = "terraform-state"
+#    storage_account_name  = "tfstateaccountsandbox"
+#    container_name        = "tfstatecontainer"
+#    key                   = "main.terraform.tfstate"
+#  }
+#}
 
 
 ############################################################
 # RESOURCE
 ############################################################
 module "azure_resource_group" {
-  source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
-  
+  #source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
+  source = "../."
+
   # Provide values for the module's variables
   app_name    = "myapp"
   environment = "dev"
@@ -134,23 +135,6 @@ The results of the most recent Checkov security scan. If there is no data, then 
 The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.
 
 ```hcl
-terraform scan results:
-
-Passed checks: 0, Failed checks: 1, Skipped checks: 0
-
-Check: CKV_TF_1: "Ensure Terraform module sources use a commit hash"
-	FAILED for resource: azure_resource_group
-	File: /main.tf:35-42
-	Guide: https://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/supply-chain-policies/terraform-policies/ensure-terraform-module-sources-use-git-url-with-commit-hash-revision.html
-
-		35 | module "azure_resource_group" {
-		36 |   source = "git@github.com:grinntec-terraform-azure/terraform-azure-resource-group.git?ref=0.0.1"
-		37 |   
-		38 |   # Provide values for the module's variables
-		39 |   app_name    = "myapp"
-		40 |   environment = "dev"
-		41 |   location    = "westeurope"
-		42 | }
 
 ```
 <!-- END_TF_DOCS -->
