@@ -17,5 +17,26 @@ jobs:
         sudo pip install checkov
     - name: Checkov tests
       run: |
-        checkov --file ./main.tf
-        checkov --file ./example/main.tf
+        checkov -f ./main.tf -o cli --output-file-path './checkov/module/'
+        checkov -f ./example/main.tf -o cli --output-file-path './checkov/example/'
+    # Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
+    - name: Check for changes in 'checkov/module' and 'checkov/example' directories
+      id: check_changes
+      run: |
+        if git status --porcelain './checkov/module' './checkov/example' | grep -q .; then
+          echo "Changes found in 'checkov/module' or 'checkov/example' directories."
+          echo "::set-output name=changes::true"
+        else
+          echo "No changes found in 'checkov/module' or 'checkov/example' directories."
+          echo "::set-output name=changes::false"
+        fi
+
+     # Commit the changes to the repository only if changes were found.
+    - name: Commit Results
+      if: steps.check_changes.outputs.changes == 'true'
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Action - terraform-module-scanner"
+        git add './checkov/module' './checkov/example'
+        git commit -m "Resulting from Checkov"
+        git push
