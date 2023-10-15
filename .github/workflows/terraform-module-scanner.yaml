@@ -138,21 +138,21 @@ jobs:
       run: tflint --init --config ./tflint/tflint.hcl
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
-    - name: Execute TFLint and Store Results
+    - name: Execute TFLint and Store Results - module
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
       # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
       #run: tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-module.txt
-      run: tflint --config ./tflint/tflint.hcl > tflint/tflint-results-module.txt
+      run: tflint --config ./tflint/tflint-module.hcl > tflint/tflint-results-module.txt
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
-    - name: Execute TFLint and Store Results
+    - name: Execute TFLint and Store Results - example
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
       # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
       run: |
         cd ./example
-        tflint -f compact --config ../tflint/tflint.hcl > ../tflint/tflint-results-example.txt
+        tflint -f compact --config ../tflint/tflint-example.hcl > ../tflint/tflint-results-example.txt
 
 
 
