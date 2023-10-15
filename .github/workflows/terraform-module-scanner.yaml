@@ -231,26 +231,24 @@ jobs:
     - name: Clean Checkov Output
       run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
 
-    # Check if there are changes in the 'checkov' directory before committing.
-    - name: Check for changes in 'checkov' directory
+    # Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
+    - name: Check for changes in 'checkov/module' and 'checkov/example' directories
       id: check_changes
       run: |
-        cd ./checkov
-        if git status --porcelain | grep -q .; then
-          echo "Changes found in 'checkov' directory."
+        if git status --porcelain './checkov/module' './checkov/example' | grep -q .; then
+          echo "Changes found in 'checkov/module' or 'checkov/example' directories."
           echo "::set-output name=changes::true"
         else
-          echo "No changes found in 'checkov' directory."
+          echo "No changes found in 'checkov/module' or 'checkov/example' directories."
           echo "::set-output name=changes::false"
         fi
 
-    # Commit the TFLint results file(s) to the repository only if changes were found.
+     # Commit the changes to the repository only if changes were found.
     - name: Commit Results
       if: steps.check_changes.outputs.changes == 'true'
       run: |
-        cd ./checkov
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Action - terraform-module-scanner"
-        git add .
+        git add './checkov/module' './checkov/example'
         git commit -m "Resulting from Checkov"
         git push
