@@ -228,8 +228,8 @@ jobs:
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
-    - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
+    #- name: Clean Checkov Output
+    #  run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
 
     # Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
     - name: Check for changes in 'checkov/module' and 'checkov/example' directories
