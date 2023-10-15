@@ -8,17 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
       - name: Test with Checkov
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: /example
+          file: ./main.tf
           output_format: cli # Report output format
-          output_file_path: /checkov/example/ # Name of the output folder to save the chosen output formats
+          output_file_path: /checkov/module/ # Name of the output folder to save the chosen output formats
           framework: terraform # Filter scan to run only on specific infrastructure code frameworks
           soft_fail: 'true' # Runs checks but always returns a 0 exit code    
       - name: Check for changes in 'checkov/module' and 'checkov/example' directories
