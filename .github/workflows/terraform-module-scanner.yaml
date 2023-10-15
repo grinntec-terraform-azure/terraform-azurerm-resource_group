@@ -158,7 +158,22 @@ jobs:
       run: |
         ls -l ./tflint
 
+    # Check if there are changes in the 'tflint' directory before committing.
+    - name: Check for changes in 'tflint' directory
+      id: check_changes
+      run: |
+        cd ./tflint
+        if git status --porcelain | grep -q .; then
+          echo "Changes found in 'tflint' directory."
+          echo "::set-output name=changes::true"
+        else
+          echo "No changes found in 'tflint' directory."
+          echo "::set-output name=changes::false"
+        fi
+    
+    # Commit the TFLint results file(s) to the repository only if changes were found.
     - name: Commit TFLint Results
+      if: steps.check_changes.outputs.changes == 'true'
       run: |
         cd ./tflint
         git config --global user.email "actions@github.com"
