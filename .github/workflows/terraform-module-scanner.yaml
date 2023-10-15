@@ -203,7 +203,7 @@ jobs:
 
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
-    - name: Run Checkov Scan
+    - name: Run Checkov Scan - module
       uses: bridgecrewio/checkov-action@master
       with:
         file: ./main.tf
@@ -218,7 +218,7 @@ jobs:
 
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
-    - name: Run Checkov Scan
+    - name: Run Checkov Scan - example
       uses: bridgecrewio/checkov-action@master
       with:
         file: ./example/main.tf
