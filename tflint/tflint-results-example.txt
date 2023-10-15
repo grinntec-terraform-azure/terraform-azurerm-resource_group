@@ -1,1 +1,4 @@
-main.tf:35:1: error - `azure_resource_group` module is not found. Did you run `terraform init`?. 
+2 issue(s) found:
+
+main.tf:5:1: Warning - Missing version constraint for provider "azurerm" in "required_providers" (terraform_required_providers)
+:0:0: Warning - terraform "required_version" attribute is required (terraform_required_version)
