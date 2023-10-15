@@ -31,4 +31,6 @@ config {
   plugin_dir = "~/.tflint.d/plugins"
 
   module = false
+
+  force = true
 }
