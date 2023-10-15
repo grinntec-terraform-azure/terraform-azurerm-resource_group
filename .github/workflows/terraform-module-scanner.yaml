@@ -127,8 +127,8 @@ jobs:
 # TFLint
 ### ------------------------------------------ ###
 # Lint Terraform configurations using TFLint
-  tflint:
-    name: 'TFLint'
+  tflint-module:
+    name: 'TFLint - module'
     runs-on: ubuntu-latest
     needs: [terraform-fmt-validate-module, terraform-fmt-validate-example]
     steps:
@@ -170,7 +170,7 @@ jobs:
       continue-on-error: true
 
       # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
-      run: tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results.txt
+      run: tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-module.txt
 
     # Commit the TFLint results file(s) to the repository.
     # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
@@ -192,6 +192,74 @@ jobs:
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
 
+  # Lint Terraform configurations using TFLint
+  tflint-example:
+    name: 'TFLint - example'
+    runs-on: ubuntu-latest
+    needs: [tflint-module]
+    steps:
+
+    # Check out the code to the runner environment where the workflow is running
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        ref: main
+
+    # Caching TFLint plugins to optimize workflow execution time.
+    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
+    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
+    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
+    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
+    - name: Setup TFLint cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.tflint.d/plugins
+        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+    # Set up and install the specified version of TFLint
+    - name: Install TFLint v0.44.1
+      uses: terraform-linters/setup-tflint@v3
+      with:
+        tflint_version: v0.44.1
+
+    # Set up TFLint plugins using the provided configuration file.
+    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
+    # The tflint.hcl patch is relative to the repository where the action is run
+    # The tflint.hcl file can be changed according to what you're linting
+    # By default it'll have the azure and aws libraries
+    - name: Initialize TFLint Plugins
+      run: tflint --init --config ./tflint/tflint.hcl
+
+    # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
+    - name: Execute TFLint and Store Results
+    # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
+      continue-on-error: true
+
+      # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
+      run: |
+        cd ./example
+        tflint -f compact --config ../tflint/tflint.hcl > ../tflint/tflint-results-example.txt
+
+    # Commit the TFLint results file(s) to the repository.
+    # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
+    - name: Commit TFLint Results
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        # Specify the path pattern to the TFLint results files that need to be added to the commit.
+        add: './tflint/*'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from TFLint'    
+  
+    ## Push changes to the main branch.
+    ## Requires authentication, which is provided through a GITHUB_TOKEN 
+    ## environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./example
+        github_token: ${{ env.GITHUB_TOKEN }}
+
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
 ### ------------------------------------------ ###
@@ -201,7 +269,7 @@ jobs:
   checkov-security-scan-module:
     name: 'Checkov Security Scan'
     runs-on: ubuntu-latest
-    needs: [tflint]
+    needs: [tflint-example]
     steps:
     
     # Check out the code to the runner environment where the workflow is running
@@ -343,7 +411,7 @@ jobs:
     if: failure()
     
     # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate-module, terraform-fmt-validate-example, tflint,checkov-security-scan-module, create-readme]
+    needs: [terraform-fmt-validate-module, terraform-fmt-validate-example, tflint-module, tflint-example ,checkov-security-scan-module, create-readme]
     
     steps:
     - name: Send Failure Notification to Slack
@@ -393,7 +461,7 @@ jobs:
     if: success()
     
     # Dependencies: This job depends on the completion of the following jobs.
-    needs: [terraform-fmt-validate-module, terraform-fmt-validate-example, tflint,checkov-security-scan-module, create-readme]
+    needs: [terraform-fmt-validate-module, terraform-fmt-validate-example, tflint-module, tflint-example ,checkov-security-scan-module, create-readme]
     
     steps:
     - name: Send Success Notification to Slack
