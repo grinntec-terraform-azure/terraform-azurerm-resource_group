@@ -137,13 +137,10 @@ jobs:
     - name: Initialize TFLint Plugins
       run: tflint --init --config ./tflint/tflint.hcl
 
-    # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results - module
-    # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
-      # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
       run: |
-        tflint --format default > tflint/tflint-results-module.txt 2>&1
+        tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
 
     # tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
 
