@@ -209,7 +209,7 @@ jobs:
         file: ./main.tf
         output_format: cli # Report output format
         output_file_path: ./checkov/module/ # Name of the output folder to save the chosen output formats
-        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
@@ -224,7 +224,7 @@ jobs:
         file: ./example/main.tf
         output_format: cli # Report output format
         output_file_path: ./checkov/example/ # Name of the output folder to save the chosen output formats
-        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
