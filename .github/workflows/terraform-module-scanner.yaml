@@ -154,6 +154,10 @@ jobs:
       run: |
         cd ./example
         tflint --format default > "../tflint/tflint-results-example.txt" 2>&1
+    
+    # Strip out ANSI codes from the results file
+    - name: Clean Results file - example
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-example.txt
 
     # Check if there are changes in the 'tflint' directory before committing.
     - name: Check for changes in 'tflint' directory
