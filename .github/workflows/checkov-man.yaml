@@ -15,8 +15,7 @@ jobs:
     - name: Install
       run: |
         sudo pip install checkov
-    - name: Setup Terraform on the runner
-      uses: hashicorp/setup-terraform@v2.0.3
-    - name: Terraform init, fmt, & validate - module
+    - name: Checkov tests
       run: |
         checkov --file ./main.tf
+        checkov --file ./example/main.tf
