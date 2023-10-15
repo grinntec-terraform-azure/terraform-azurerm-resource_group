@@ -106,7 +106,6 @@ jobs:
     #needs: [terraform-fmt-validate]
     steps:
 
-    # Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
       uses: actions/checkout@v3
       with:
@@ -137,29 +136,24 @@ jobs:
     - name: Initialize TFLint Plugins
       run: tflint --init --config ./tflint/tflint.hcl
 
+    # Execute TFLInt against the ./ directory
+    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
     - name: Execute TFLint and Store Results - module
       continue-on-error: true
       run: |
         tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
 
-    # Strip out ANSI codes from the Checkov scan results
-    - name: Clean Checkov Output
+    # Strip out ANSI codes from the results file
+    - name: Clean Results file - module
       run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
 
-    # tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
-
-    # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
+    # Execute TFLInt against the ./example directory
+    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
     - name: Execute TFLint and Store Results - example
-    # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
       run: |
         cd ./example
-        tflint --format default > ../tflint/tflint-results-example.txt
-
-    # List the contents of the 'tflint' directory to debug and check if .txt files are generated.
-    - name: List 'tflint' directory contents
-      run: |
-        ls -l ./tflint
+        tflint --format default > ""../tflint/tflint-results-example.txt" 2>&1
 
     # Check if there are changes in the 'tflint' directory before committing.
     - name: Check for changes in 'tflint' directory
