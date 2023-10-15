@@ -142,14 +142,13 @@ jobs:
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
       # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
-      #run: tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-module.txt
-      run: tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
+      run: |
+        tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results - example
     # Uncomment the line below if you want the workflow to continue even if this step encounters an error.
       continue-on-error: true
-      # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
       run: |
         cd ./example
         tflint -f compact --config ../tflint/tflint-example.hcl > ../tflint/tflint-results-example.txt
@@ -160,7 +159,7 @@ jobs:
       uses: EndBug/add-and-commit@v9.1.1
       with:
         # Specify the path pattern to the TFLint results files that need to be added to the commit.
-        add: .
+        add: ./tflint
         author_name: 'GitHub Action - terraform-module-scanner'
         message: 'Resulting from TFLint'    
   
@@ -171,6 +170,6 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         branch: main
-        directory: ./
+        directory: ./tflint
         github_token: ${{ env.GITHUB_TOKEN }}
 
