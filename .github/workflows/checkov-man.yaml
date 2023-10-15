@@ -24,6 +24,7 @@ jobs:
       uses: hashicorp/setup-terraform@v2.0.3
     - name: Terraform init, fmt, & validate - module
       run: |
+        cd example
         terraform init -backend=false
         terraform plan --out tfplan.binary
         terraform show -json tfplan.binary | jq > tfplan.json
