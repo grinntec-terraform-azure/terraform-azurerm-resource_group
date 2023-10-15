@@ -142,6 +142,10 @@ jobs:
       run: |
         tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
 
+    # Strip out ANSI codes from the Checkov scan results
+    - name: Clean Checkov Output
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
+
     # tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
