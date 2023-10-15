@@ -1,0 +1,9 @@
+Failed to load configurations; main.tf:33,11-12: Unclosed configuration block; There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.:
+
+[31mError[0m: Unclosed configuration block
+
+  on main.tf line 33, in terraform:
+  33: terraform [1;4m{[0m
+
+There is no closing brace for this block before the end of the file. This may be caused by incorrect brace nesting elsewhere in this file.
+
