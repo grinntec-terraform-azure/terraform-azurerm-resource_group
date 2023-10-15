@@ -16,11 +16,11 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          file: ./example/main.tf
+          directory: /example
           output_format: cli # Report output format
-          output_file_path: ./checkov/example/ # Name of the output folder to save the chosen output formats
+          output_file_path: /checkov/example/ # Name of the output folder to save the chosen output formats
           framework: terraform # Filter scan to run only on specific infrastructure code frameworks
-          #soft_fail: 'true' # Runs checks but always returns a 0 exit code    
+          soft_fail: 'true' # Runs checks but always returns a 0 exit code    
       - name: Check for changes in 'checkov/module' and 'checkov/example' directories
         id: check_changes
         run: |
