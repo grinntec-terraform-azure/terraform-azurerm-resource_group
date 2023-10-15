@@ -25,3 +25,10 @@ plugin "aws" {
     version = "0.27.0"
     source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
+
+config {
+  format = "default"
+  plugin_dir = "~/.tflint.d/plugins"
+
+  module = true
+}
