@@ -153,6 +153,11 @@ jobs:
         cd ./example
         tflint -f compact --config ../tflint/tflint-example.hcl > ../tflint/tflint-results-example.txt
 
+    # List the contents of the 'tflint' directory to debug and check if .txt files are generated.
+    - name: List 'tflint' directory contents
+      run: |
+        ls -l ./tflint
+
     - name: Commit TFLint Results
       run: |
         cd ./tflint
