@@ -135,7 +135,7 @@ jobs:
     # The tflint.hcl file can be changed according to what you're linting
     # By default it'll have the azure and aws libraries
     - name: Initialize TFLint Plugins
-      run: tflint --init --config ./tflint/tflint-plugins.hcl
+      run: tflint --init --config ./tflint/tflint.hcl
 
     # Execute TFLint and store the results in a timestamped file within the 'tflint' directory.
     - name: Execute TFLint and Store Results - module
@@ -143,7 +143,7 @@ jobs:
       continue-on-error: true
       # Run TFLint again and redirect its output to a timestamped file in the 'tflint' directory.  
       run: |
-        tflint -f compact --config ./tflint/tflint-plugins.hcl > tflint/tflint-results-module.txt
+        tflint > tflint/tflint-results-module.txt
 
     # tflint --config ./tflint/tflint-module.hcl > ./tflint/tflint-results-module.txt
 
