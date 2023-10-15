@@ -99,108 +99,158 @@ jobs:
 ### ------------------------------------------ ###
 # TFLint
 ### ------------------------------------------ ###
-# Lint Terraform configurations using TFLint
-  tflint:
-    name: 'TFLint'
-    runs-on: ubuntu-latest
-    #needs: [terraform-fmt-validate]
-    steps:
+## Lint Terraform configurations using TFLint
+#  tflint:
+#    name: 'TFLint'
+#    runs-on: ubuntu-latest
+#    #needs: [terraform-fmt-validate]
+#    steps:
+#
+#    - name: Checkout the repository
+#      uses: actions/checkout@v3
+#      with:
+#        ref: main
+#
+#    # Caching TFLint plugins to optimize workflow execution time.
+#    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
+#    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
+#    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
+#    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
+#    - name: Setup TFLint cache
+#      uses: actions/cache@v3
+#      with:
+#        path: ~/.tflint.d/plugins
+#        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+#
+#    # Set up and install the specified version of TFLint
+#    - name: Install TFLint v0.44.1
+#      uses: terraform-linters/setup-tflint@v3
+#      with:
+#        tflint_version: v0.44.1
+#
+#    # Set up TFLint plugins using the provided configuration file.
+#    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
+#    # The tflint.hcl patch is relative to the repository where the action is run
+#    # The tflint.hcl file can be changed according to what you're linting
+#    # By default it'll have the azure and aws libraries
+#    - name: Initialize TFLint Plugins
+#      run: tflint --init --config ./tflint/tflint.hcl
+#
+#    # Execute TFLInt against the ./ directory
+#    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
+#    - name: Execute TFLint and Store Results - module
+#      continue-on-error: true
+#      run: |
+#        tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
+#
+#    # Strip out ANSI codes from the results file
+#    - name: Clean Results file - module
+#      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
+#
+#    # Execute TFLInt against the ./example directory
+#    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
+#    - name: Execute TFLint and Store Results - example
+#      continue-on-error: true
+#      run: |
+#        cd ./example
+#        tflint --format default > "../tflint/tflint-results-example.txt" 2>&1
+#    
+#    # Strip out ANSI codes from the results file
+#    - name: Clean Results file - example
+#      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-example.txt
+#
+#    # Check if there are changes in the 'tflint' directory before committing.
+#    - name: Check for changes in 'tflint' directory
+#      id: check_changes
+#      run: |
+#        cd ./tflint
+#        if git status --porcelain | grep -q .; then
+#          echo "Changes found in 'tflint' directory."
+#          echo "::set-output name=changes::true"
+#        else
+#          echo "No changes found in 'tflint' directory."
+#          echo "::set-output name=changes::false"
+#        fi
+#
+#    # Commit the TFLint results file(s) to the repository only if changes were found.
+#    - name: Commit TFLint Results
+#      if: steps.check_changes.outputs.changes == 'true'
+#      run: |
+#        cd ./tflint
+#        git config --global user.email "actions@github.com"
+#        git config --global user.name "GitHub Action - terraform-module-scanner"
+#        git add .
+#        git commit -m "Resulting from TFLint"
+#        git push
 
+### ------------------------------------------ ###
+# CHECKOV SECURITY SCAN
+### ------------------------------------------ ###
+# Run a security scan on the Terraform code using the Checkov tool.
+# Commit the results to the repository.
+
+  checkov-security-scan-module:
+    name: 'Checkov Security Scan'
+    runs-on: ubuntu-latest
+    #needs: [tflint-example]
+    steps:
+    
+    # Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
       uses: actions/checkout@v3
       with:
         ref: main
 
-    # Caching TFLint plugins to optimize workflow execution time.
-    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
-    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
-    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
-    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
-    - name: Setup TFLint cache
-      uses: actions/cache@v3
+    # Run a security scan on the Terraform code using the Checkov tool.
+    # Generate a report of security issues that were found.
+    - name: Run Checkov Scan
+      uses: bridgecrewio/checkov-action@master
       with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+        file: ./main.tf
+        output_format: cli # Report output format
+        output_file_path: './checkov/module/' # Name of the output folder to save the chosen output formats
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
-    # Set up and install the specified version of TFLint
-    - name: Install TFLint v0.44.1
-      uses: terraform-linters/setup-tflint@v3
+     # Strip out ANSI codes from the Checkov scan results
+    - name: Clean Checkov Output
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/module/results_cli.txt
+
+    # Run a security scan on the Terraform code using the Checkov tool.
+    # Generate a report of security issues that were found.
+    - name: Run Checkov Scan
+      uses: bridgecrewio/checkov-action@master
       with:
-        tflint_version: v0.44.1
+        file: ./example/main.tf
+        output_format: cli # Report output format
+        output_file_path: './checkov/example/' # Name of the output folder to save the chosen output formats
+        framework: terraform # Filter scan to run only on specific infrastructure code frameworks
+        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
-    # Set up TFLint plugins using the provided configuration file.
-    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
-    # The tflint.hcl patch is relative to the repository where the action is run
-    # The tflint.hcl file can be changed according to what you're linting
-    # By default it'll have the azure and aws libraries
-    - name: Initialize TFLint Plugins
-      run: tflint --init --config ./tflint/tflint.hcl
+     # Strip out ANSI codes from the Checkov scan results
+    - name: Clean Checkov Output
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
 
-    # Execute TFLInt against the ./ directory
-    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
-    - name: Execute TFLint and Store Results - module
-      continue-on-error: true
-      run: |
-        tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
-
-    # Strip out ANSI codes from the results file
-    - name: Clean Results file - module
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
-
-    # Execute TFLInt against the ./example directory
-    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
-    - name: Execute TFLint and Store Results - example
-      continue-on-error: true
-      run: |
-        cd ./example
-        tflint --format default > "../tflint/tflint-results-example.txt" 2>&1
-    
-    # Strip out ANSI codes from the results file
-    - name: Clean Results file - example
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-example.txt
-
-    # Check if there are changes in the 'tflint' directory before committing.
-    - name: Check for changes in 'tflint' directory
+    # Check if there are changes in the 'checkov' directory before committing.
+    - name: Check for changes in 'checkov' directory
       id: check_changes
       run: |
-        cd ./tflint
+        cd ./checkov
         if git status --porcelain | grep -q .; then
-          echo "Changes found in 'tflint' directory."
+          echo "Changes found in 'checkov' directory."
           echo "::set-output name=changes::true"
         else
-          echo "No changes found in 'tflint' directory."
+          echo "No changes found in 'checkov' directory."
           echo "::set-output name=changes::false"
         fi
 
     # Commit the TFLint results file(s) to the repository only if changes were found.
-    - name: Commit TFLint Results
+    - name: Commit Results
       if: steps.check_changes.outputs.changes == 'true'
       run: |
-        cd ./tflint
+        cd ./checkov
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Action - terraform-module-scanner"
         git add .
-        git commit -m "Resulting from TFLint"
+        git commit -m "Resulting from Checkov"
         git push
-
-#    # Commit the TFLint results file(s) to the repository.
-#    # This step uses the 'EndBug/add-and-commit' action to automatically add and commit the generated TFLint results.
-#    - name: Commit TFLint Results
-#      uses: EndBug/add-and-commit@v9.1.1
-#      with:
-#        # Specify the path pattern to the TFLint results files that need to be added to the commit.
-#        add: ./tflint
-#        author_name: 'GitHub Action - terraform-module-scanner'
-#        message: 'Resulting from TFLint'    
-#  
-#    ## Push changes to the main branch.
-#    ## Requires authentication, which is provided through a GITHUB_TOKEN 
-#    ## environment variable.
-#    - name: Push changes to main branch
-#      uses: ad-m/github-push-action@master
-#      with:
-#        branch: main
-#        directory: ./tflint
-#        github_token: ${{ env.GITHUB_TOKEN }}
-#
-#
