@@ -309,13 +309,14 @@ jobs:
     - name: Check for changes in './readme.md'
       id: check_changes
       run: |
-        if git status --porcelain './readme.md | grep -q .; then
+        if git status --porcelain './readme.md' | grep -q .; then
           echo "Changes found in './readme.md'"
           echo "::set-output name=changes::true"
         else
-          echo "No changes found in './readme.md"
+          echo "No changes found in './readme.md'"
           echo "::set-output name=changes::false"
         fi
+      shell: /usr/bin/bash -e {0}
 
      # Commit the changes to the repository only if changes were found.
     - name: Commit Results
