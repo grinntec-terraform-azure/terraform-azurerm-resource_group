@@ -1,0 +1,11 @@
+[34msecrets scan results:
+[36m
+Passed checks: 0, Failed checks: 1, Skipped checks: 0
+
+[97mCheck: CKV_SECRET_6: "Base64 High Entropy String"
+[31m	FAILED for resource: c303df00cd0a72b21c62900b758b06fc541664ce
+[35m	File: /example\main.tf:10-11
+	Guide: [1m[4m[34mhttps://docs.paloaltonetworks.com/content/techdocs/en_US/prisma/prisma-cloud/prisma-cloud-code-security-policy-reference/secrets-policies/secrets-policy-index/git-secrets-6.html
+
+		[37m10 |   #client_secret = "your**************" // Avoid hard-coding security credentials
+
