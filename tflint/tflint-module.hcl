@@ -32,5 +32,5 @@ config {
 
   module = true
 
-  force = true
+  force = false
 }
