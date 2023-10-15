@@ -150,7 +150,7 @@ jobs:
       continue-on-error: true
       run: |
         cd ./example
-        tflint -f compact --config ../tflint/tflint-example.hcl > ../tflint/tflint-results-example.txt
+        tflint --format default > ../tflint/tflint-results-example.txt
 
     # List the contents of the 'tflint' directory to debug and check if .txt files are generated.
     - name: List 'tflint' directory contents
