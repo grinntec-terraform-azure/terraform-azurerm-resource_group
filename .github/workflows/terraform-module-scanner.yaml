@@ -69,8 +69,15 @@ jobs:
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
 
-    - name: Terraform init, fmt, & validate
+    - name: Terraform init, fmt, & validate - module
       run: |
+        terraform init -backend=false
+        terraform fmt
+        terraform validate
+
+    - name: Terraform init, fmt, & validate - ./example/main.tf
+      run: |
+        cd ./example
         terraform init -backend=false
         terraform fmt
         terraform validate
@@ -89,37 +96,38 @@ jobs:
         directory: ./
         github_token: ${{ env.GITHUB_TOKEN }}
 
-  terraform-fmt-validate-example:
-    name: 'Terraform FMT & Validate - example'
-    runs-on: ubuntu-latest
-    needs: [terraform-fmt-validate-module]
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-        with:
-          ref: main
-
-      - name: Setup Terraform on the runner
-        uses: hashicorp/setup-terraform@v2.0.3
-
-      - name: Terraform init, fmt, & validate - ./example/main.tf
-        run: |
-          cd ./example
-          terraform init -backend=false
-          terraform fmt
-          terraform validate
-
-      - name: Commit any changes to ./example/main.tf
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          add: './example/main.tf'
-          author_name: 'GitHub Action - terraform-module-scanner'
-          message: 'TERRAFORM FMT & VALIDATE - ./example/main.tf'
-
-      - name: Push changes to main branch
-        uses: ad-m/github-push-action@master
-        with:
-          branch: main
-          directory: ./example/
-          github_token: ${{ env.GITHUB_TOKEN }}
-
+#  terraform-fmt-validate-example:
+#    name: 'Terraform FMT & Validate - example'
+#    runs-on: ubuntu-latest
+#    needs: [terraform-fmt-validate-module]
+#    steps:
+#      - name: Checkout the repository
+#        uses: actions/checkout@v3
+#        with:
+#          ref: main
+#
+#      - name: Setup Terraform on the runner
+#        uses: hashicorp/setup-terraform@v2.0.3
+#
+#      - name: Terraform init, fmt, & validate - ./example/main.tf
+#        run: |
+#          cd ./example
+#          terraform init -backend=false
+#          terraform fmt
+#          terraform validate
+#
+#      - name: Commit any changes to ./example/main.tf
+#        uses: EndBug/add-and-commit@v9.1.1
+#        with:
+#          add: './example/main.tf'
+#          author_name: 'GitHub Action - terraform-module-scanner'
+#          message: 'TERRAFORM FMT & VALIDATE - ./example/main.tf'
+#
+#      - name: Push changes to main branch
+#        uses: ad-m/github-push-action@master
+#        with:
+#          branch: main
+#          directory: ./example/
+#          github_token: ${{ env.GITHUB_TOKEN }}
+#
+#
