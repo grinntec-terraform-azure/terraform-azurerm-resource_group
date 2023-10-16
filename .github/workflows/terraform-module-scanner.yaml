@@ -175,25 +175,29 @@ jobs:
         ref: main
 
     # Check if 'results_cli.txt' exists in './scan-tools/checkov/module/' and create it if not
-    - name: Ensure './scan-tools/checkov/module/results_cli.txt' exists
+    - name: Ensure '/scan-tools/checkov/module/results_cli.txt' exists
       run: |
-        FILE_PATH="./scan-tools/checkov/module/results_cli.txt"
+        DIR_PATH="/scan-tools/checkov/module/"
+        FILE_PATH="${DIR_PATH}results_cli.txt"
+        mkdir -p "$DIR_PATH"        
         if [[ ! -f "$FILE_PATH" ]]; then
           touch "$FILE_PATH"
-          echo "'filea' created in './scan-tools/checkov/module/'"
+          echo "'filea' created in '/scan-tools/checkov/module/'"
         else
-          echo "'filea' already exists in './scan-tools/checkov/module/'"
+          echo "'filea' already exists in '/scan-tools/checkov/module/'"
         fi
 
     # Check if 'filea' exists in './scan-tools/checkov/example/' and create it if not
     - name: Ensure './scan-tools/checkov/example/results_cli.txt' exists
       run: |
-        FILE_PATH="./scan-tools/checkov/example/results_cli.txt"
+        DIR_PATH="/scan-tools/checkov/example/"
+        FILE_PATH="${DIR_PATH}results_cli.txt"
+        mkdir -p "$DIR_PATH"        
         if [[ ! -f "$FILE_PATH" ]]; then
           touch "$FILE_PATH"
-          echo "'filea' created in './scan-tools/checkov/example/'"
+          echo "'filea' created in '/scan-tools/checkov/example/'"
         else
-          echo "'filea' already exists in './scan-tools/checkov/example/'"
+          echo "'filea' already exists in '/scan-tools/checkov/example/'"
         fi
 
     # Run a security scan on the Terraform code using the Checkov tool.
