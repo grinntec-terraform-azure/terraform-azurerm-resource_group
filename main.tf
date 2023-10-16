@@ -59,7 +59,7 @@ resource "azurerm_resource_group" "this" {
   name     = "rg-${var.app_name}-${var.environment}"
   location = var.location
   tags     = local.tags
-}
+      }
 
 
 ############################################################
