@@ -249,7 +249,7 @@ jobs:
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Action - terraform-module-scanner"
-        git add './scan-tools/checkov/module' './checkov/example'
+        git add './scan-tools/checkov/module' './scan-tools/checkov/example'
         git commit -m "Resulting from Checkov"
         git push
 
@@ -305,21 +305,24 @@ jobs:
       run: |
         sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
 
-    # Check if there are changes to the 'readme.md' file before committing.
-    - name: Check for changes in 'README.md'
+    # Check if there are changes in './README.md' before committing.
+    - name: Check for changes in './README.md
       id: check_changes
       run: |
-        if git diff --quiet HEAD~1 HEAD README.md; then
-          echo "No changes found in 'README.md'"
-          echo "::set-output name=changes::false"
-        else
-          echo "Changes found in 'README.md'"
+        if git status --porcelain './README.md' | grep -q .; then
+          echo "Changes found in './README.md"
           echo "::set-output name=changes::true"
+        else
+          echo "No changes found in './README.md'"
+          echo "::set-output name=changes::false"
         fi
+
+     # Commit the changes to the repository only if changes were found.
     - name: Commit Results
       if: steps.check_changes.outputs.changes == 'true'
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Action - terraform-module-scanner"
-        git commit -m "Update README.md" README.md
+        git add './README.md'
+        git commit -m "Resulting from Readme"
         git push
