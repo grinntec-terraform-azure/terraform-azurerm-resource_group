@@ -154,7 +154,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: TFLint
-        file_pattern: './scan-tools/tflint/*'
+        file_pattern: '/scan-tools/tflint/*'
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
@@ -174,10 +174,10 @@ jobs:
       with:
         ref: main
 
-    # Check if 'results_cli.txt' exists in './scan-tools/checkov/module/' and create it if not
+    # Check if 'results_cli.txt' exists in '/scan-tools/checkov/module/' and create it if not
     - name: Ensure '/scan-tools/checkov/module/results_cli.txt' exists
       run: |
-        DIR_PATH="/scan-tools/checkov/module/"
+        DIR_PATH="${GITHUB_WORKSPACE}/scan-tools/checkov/module/"
         FILE_PATH="${DIR_PATH}results_cli.txt"
         mkdir -p "$DIR_PATH"        
         if [[ ! -f "$FILE_PATH" ]]; then
@@ -187,10 +187,10 @@ jobs:
           echo "'filea' already exists in '/scan-tools/checkov/module/'"
         fi
 
-    # Check if 'filea' exists in './scan-tools/checkov/example/' and create it if not
+    # Check if 'results_cli.txt' exists in '/scan-tools/checkov/example/' and create it if not
     - name: Ensure './scan-tools/checkov/example/results_cli.txt' exists
       run: |
-        DIR_PATH="/scan-tools/checkov/example/"
+        DIR_PATH="${GITHUB_WORKSPACE}/scan-tools/checkov/example/"
         FILE_PATH="${DIR_PATH}results_cli.txt"
         mkdir -p "$DIR_PATH"        
         if [[ ! -f "$FILE_PATH" ]]; then
@@ -232,7 +232,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: Checkov
-        file_pattern: './scan-tools/checkov/*'
+        file_pattern: '/scan-tools/checkov/*'
 
   ### ------------------------------------------ ###
   # Create README.md
