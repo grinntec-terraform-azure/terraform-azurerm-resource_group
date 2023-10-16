@@ -65,16 +65,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         ref: main
-    
-    # Caching Terraform plugins
-    - name: Cache Terraform plugins
-      uses: actions/cache@v3
-      with:
-        path: .terraform/plugins
-        key: ${{ runner.os }}-terraform-${{ hashFiles('**/versions.tf') }}
-        restore-keys: |
-          ${{ runner.os }}-terraform-
-    
          
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
