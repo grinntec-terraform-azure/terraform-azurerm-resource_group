@@ -1,0 +1,388 @@
+[34mgithub_actions scan results:
+[36m
+Passed checks: 127, Failed checks: 1, Skipped checks: 0
+
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate)
+[35m	File: /terraform-module-scanner.yaml:60-95
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint)
+[35m	File: /terraform-module-scanner.yaml:95-165
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov)
+[35m	File: /terraform-module-scanner.yaml:165-213
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme)
+[35m	File: /terraform-module-scanner.yaml:213-265
+[97mCheck: CKV_GHA_5: "Found artifact build without evidence of cosign sign execution in pipeline"
+[32m	PASSED for resource: jobs
+[35m	File: /terraform-module-scanner.yaml:59-265
+[97mCheck: CKV_GHA_6: "Found artifact build without evidence of cosign sbom attestation in pipeline"
+[32m	PASSED for resource: jobs
+[35m	File: /terraform-module-scanner.yaml:59-265
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate)
+[35m	File: /terraform-module-scanner.yaml:60-95
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint)
+[35m	File: /terraform-module-scanner.yaml:95-165
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov)
+[35m	File: /terraform-module-scanner.yaml:165-213
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme)
+[35m	File: /terraform-module-scanner.yaml:213-265
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate)
+[35m	File: /terraform-module-scanner.yaml:60-95
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint)
+[35m	File: /terraform-module-scanner.yaml:95-165
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov)
+[35m	File: /terraform-module-scanner.yaml:165-213
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme)
+[35m	File: /terraform-module-scanner.yaml:213-265
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate)
+[35m	File: /terraform-module-scanner.yaml:60-95
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint)
+[35m	File: /terraform-module-scanner.yaml:95-165
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov)
+[35m	File: /terraform-module-scanner.yaml:165-213
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme)
+[35m	File: /terraform-module-scanner.yaml:213-265
+[97mCheck: CKV_GHA_7: "The build output cannot be affected by user parameters other than the build entry point and the top-level source location. GitHub Actions workflow_dispatch inputs MUST be empty. "
+[32m	PASSED for resource: on(Terraform Module Scanner)
+[35m	File: /terraform-module-scanner.yaml:20-36
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:64-70
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[2](Setup Terraform on the runner)
+[35m	File: /terraform-module-scanner.yaml:69-73
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[3](Terraform init, fmt, & validate - module)
+[35m	File: /terraform-module-scanner.yaml:72-79
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[4](Terraform init, fmt, & validate - ./example/main.tf)
+[35m	File: /terraform-module-scanner.yaml:78-86
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[5](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:85-95
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:100-111
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[2](Setup TFLint cache)
+[35m	File: /terraform-module-scanner.yaml:110-118
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[3](Install TFLint v0.44.1)
+[35m	File: /terraform-module-scanner.yaml:117-128
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[4](Initialize TFLint Plugins)
+[35m	File: /terraform-module-scanner.yaml:127-133
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[5](Execute TFLint and Store Results - module)
+[35m	File: /terraform-module-scanner.yaml:132-139
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[6](Clean Results file - module)
+[35m	File: /terraform-module-scanner.yaml:138-144
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[7](Execute TFLint and Store Results - example)
+[35m	File: /terraform-module-scanner.yaml:143-151
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[8](Clean Results file - example)
+[35m	File: /terraform-module-scanner.yaml:150-154
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(tflint).steps[9](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:153-165
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:171-179
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[2](Run Checkov Scan - module)
+[35m	File: /terraform-module-scanner.yaml:178-188
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[3](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:187-193
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[4](Run Checkov Scan - example)
+[35m	File: /terraform-module-scanner.yaml:192-202
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[5](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:201-205
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(checkov).steps[6](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:204-213
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:219-226
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[2](Check and Create README.md)
+[35m	File: /terraform-module-scanner.yaml:225-235
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[3](Generate and Update Terraform Documentation in README.md)
+[35m	File: /terraform-module-scanner.yaml:234-245
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[4](Fetch All Tags from Remote)
+[35m	File: /terraform-module-scanner.yaml:244-251
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[5](Retrieve Latest Git Tag)
+[35m	File: /terraform-module-scanner.yaml:250-258
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[6](Update Badge in readme with Git Tag)
+[35m	File: /terraform-module-scanner.yaml:257-262
+[97mCheck: CKV_GHA_1: "Ensure ACTIONS_ALLOW_UNSECURE_COMMANDS isn't true on environment variables"
+[32m	PASSED for resource: jobs(create-readme).steps[7](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:261-265
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:64-70
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[2](Setup Terraform on the runner)
+[35m	File: /terraform-module-scanner.yaml:69-73
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[3](Terraform init, fmt, & validate - module)
+[35m	File: /terraform-module-scanner.yaml:72-79
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[4](Terraform init, fmt, & validate - ./example/main.tf)
+[35m	File: /terraform-module-scanner.yaml:78-86
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[5](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:85-95
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:100-111
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[2](Setup TFLint cache)
+[35m	File: /terraform-module-scanner.yaml:110-118
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[3](Install TFLint v0.44.1)
+[35m	File: /terraform-module-scanner.yaml:117-128
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[4](Initialize TFLint Plugins)
+[35m	File: /terraform-module-scanner.yaml:127-133
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[5](Execute TFLint and Store Results - module)
+[35m	File: /terraform-module-scanner.yaml:132-139
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[6](Clean Results file - module)
+[35m	File: /terraform-module-scanner.yaml:138-144
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[7](Execute TFLint and Store Results - example)
+[35m	File: /terraform-module-scanner.yaml:143-151
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[8](Clean Results file - example)
+[35m	File: /terraform-module-scanner.yaml:150-154
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(tflint).steps[9](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:153-165
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:171-179
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[2](Run Checkov Scan - module)
+[35m	File: /terraform-module-scanner.yaml:178-188
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[3](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:187-193
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[4](Run Checkov Scan - example)
+[35m	File: /terraform-module-scanner.yaml:192-202
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[5](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:201-205
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(checkov).steps[6](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:204-213
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:219-226
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[2](Check and Create README.md)
+[35m	File: /terraform-module-scanner.yaml:225-235
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[3](Generate and Update Terraform Documentation in README.md)
+[35m	File: /terraform-module-scanner.yaml:234-245
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[4](Fetch All Tags from Remote)
+[35m	File: /terraform-module-scanner.yaml:244-251
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[5](Retrieve Latest Git Tag)
+[35m	File: /terraform-module-scanner.yaml:250-258
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[6](Update Badge in readme with Git Tag)
+[35m	File: /terraform-module-scanner.yaml:257-262
+[97mCheck: CKV_GHA_4: "Suspicious use of netcat with IP address"
+[32m	PASSED for resource: jobs(create-readme).steps[7](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:261-265
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:64-70
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[2](Setup Terraform on the runner)
+[35m	File: /terraform-module-scanner.yaml:69-73
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[3](Terraform init, fmt, & validate - module)
+[35m	File: /terraform-module-scanner.yaml:72-79
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[4](Terraform init, fmt, & validate - ./example/main.tf)
+[35m	File: /terraform-module-scanner.yaml:78-86
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[5](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:85-95
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:100-111
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[2](Setup TFLint cache)
+[35m	File: /terraform-module-scanner.yaml:110-118
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[3](Install TFLint v0.44.1)
+[35m	File: /terraform-module-scanner.yaml:117-128
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[4](Initialize TFLint Plugins)
+[35m	File: /terraform-module-scanner.yaml:127-133
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[5](Execute TFLint and Store Results - module)
+[35m	File: /terraform-module-scanner.yaml:132-139
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[6](Clean Results file - module)
+[35m	File: /terraform-module-scanner.yaml:138-144
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[7](Execute TFLint and Store Results - example)
+[35m	File: /terraform-module-scanner.yaml:143-151
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[8](Clean Results file - example)
+[35m	File: /terraform-module-scanner.yaml:150-154
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(tflint).steps[9](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:153-165
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:171-179
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[2](Run Checkov Scan - module)
+[35m	File: /terraform-module-scanner.yaml:178-188
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[3](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:187-193
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[4](Run Checkov Scan - example)
+[35m	File: /terraform-module-scanner.yaml:192-202
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[5](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:201-205
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(checkov).steps[6](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:204-213
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:219-226
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[2](Check and Create README.md)
+[35m	File: /terraform-module-scanner.yaml:225-235
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[3](Generate and Update Terraform Documentation in README.md)
+[35m	File: /terraform-module-scanner.yaml:234-245
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[4](Fetch All Tags from Remote)
+[35m	File: /terraform-module-scanner.yaml:244-251
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[5](Retrieve Latest Git Tag)
+[35m	File: /terraform-module-scanner.yaml:250-258
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[6](Update Badge in readme with Git Tag)
+[35m	File: /terraform-module-scanner.yaml:257-262
+[97mCheck: CKV_GHA_2: "Ensure run commands are not vulnerable to shell injection"
+[32m	PASSED for resource: jobs(create-readme).steps[7](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:261-265
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:64-70
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[2](Setup Terraform on the runner)
+[35m	File: /terraform-module-scanner.yaml:69-73
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[3](Terraform init, fmt, & validate - module)
+[35m	File: /terraform-module-scanner.yaml:72-79
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[4](Terraform init, fmt, & validate - ./example/main.tf)
+[35m	File: /terraform-module-scanner.yaml:78-86
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(terraform-fmt-validate).steps[5](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:85-95
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:100-111
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[2](Setup TFLint cache)
+[35m	File: /terraform-module-scanner.yaml:110-118
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[3](Install TFLint v0.44.1)
+[35m	File: /terraform-module-scanner.yaml:117-128
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[4](Initialize TFLint Plugins)
+[35m	File: /terraform-module-scanner.yaml:127-133
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[5](Execute TFLint and Store Results - module)
+[35m	File: /terraform-module-scanner.yaml:132-139
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[6](Clean Results file - module)
+[35m	File: /terraform-module-scanner.yaml:138-144
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[7](Execute TFLint and Store Results - example)
+[35m	File: /terraform-module-scanner.yaml:143-151
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[8](Clean Results file - example)
+[35m	File: /terraform-module-scanner.yaml:150-154
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(tflint).steps[9](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:153-165
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:171-179
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[2](Run Checkov Scan - module)
+[35m	File: /terraform-module-scanner.yaml:178-188
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[3](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:187-193
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[4](Run Checkov Scan - example)
+[35m	File: /terraform-module-scanner.yaml:192-202
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[5](Clean Checkov Output)
+[35m	File: /terraform-module-scanner.yaml:201-205
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(checkov).steps[6](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:204-213
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[1](Checkout the repository)
+[35m	File: /terraform-module-scanner.yaml:219-226
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[2](Check and Create README.md)
+[35m	File: /terraform-module-scanner.yaml:225-235
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[3](Generate and Update Terraform Documentation in README.md)
+[35m	File: /terraform-module-scanner.yaml:234-245
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[4](Fetch All Tags from Remote)
+[35m	File: /terraform-module-scanner.yaml:244-251
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[5](Retrieve Latest Git Tag)
+[35m	File: /terraform-module-scanner.yaml:250-258
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[6](Update Badge in readme with Git Tag)
+[35m	File: /terraform-module-scanner.yaml:257-262
+[97mCheck: CKV_GHA_3: "Suspicious use of curl with secrets"
+[32m	PASSED for resource: jobs(create-readme).steps[7](Auto-commit)
+[35m	File: /terraform-module-scanner.yaml:261-265
+[97mCheck: CKV2_GHA_1: "Ensure top-level permissions are not set to write-all"
+[31m	FAILED for resource: on(Terraform Module Scanner)
+[35m	File: /terraform-module-scanner.yaml:0-1
