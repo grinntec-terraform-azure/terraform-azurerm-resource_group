@@ -125,18 +125,18 @@ jobs:
     # The tflint.hcl file can be changed according to what you're linting
     # By default it'll have the azure and aws libraries
     - name: Initialize TFLint Plugins
-      run: tflint --init --config ./tflint/tflint.hcl
+      run: tflint --init --config ./scan-tools/tflint/tflint.hcl
 
     # Execute TFLInt against the ./ directory
     # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
     - name: Execute TFLint and Store Results - module
       continue-on-error: true
       run: |
-        tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
+        tflint --format default > "./scan-tools/tflint/tflint-results-module.txt" 2>&1
 
     # Strip out ANSI codes from the results file
     - name: Clean Results file - module
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-module.txt
 
     # Execute TFLInt against the ./example directory
     # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
@@ -144,11 +144,11 @@ jobs:
       continue-on-error: true
       run: |
        cd ./example
-        tflint --format default > "../tflint/tflint-results-example.txt" 2>&1
+        tflint --format default > "../scan-tools/tflint/tflint-results-example.txt" 2>&1
     
     # Strip out ANSI codes from the results file
     - name: Clean Results file - example
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-example.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-example.txt
 
     - name: Auto-commit
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
@@ -180,12 +180,12 @@ jobs:
       with:
         file: ./main.tf
         output_format: cli # Report output format
-        output_file_path: ./checkov/module/ # Name of the output folder to save the chosen output formats
+        output_file_path: ./scan-tools/checkov/module/ # Name of the output folder to save the chosen output formats
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
     - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/module/results_cli.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/module/results_cli.txt
 
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
@@ -194,17 +194,18 @@ jobs:
       with:
         file: ./example/main.tf
         output_format: cli # Report output format
-        output_file_path: ./checkov/example/ # Name of the output folder to save the chosen output formats
+        output_file_path: ./scan-tools/checkov/example/ # Name of the output folder to save the chosen output formats
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
     - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/example/results_cli.txt
 
     - name: Auto-commit
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: Checkov
+        file_pattern: './scan-tools/checkov/*'
 
   ### ------------------------------------------ ###
   # Create README.md
@@ -235,7 +236,7 @@ jobs:
       uses: terraform-docs/gh-actions@v1.0.0
       with:
         # Specify the configuration file for 'terraform-docs'
-        config-file: ./terraform-docs/terraform-docs.yml
+        config-file: ./scan-tools/terraform-docs/terraform-docs.yml
         # Enable pushing the updated README.md back to the pull request branch
         git-push: "false"
     
