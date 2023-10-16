@@ -214,7 +214,7 @@ jobs:
 
      # Strip out ANSI codes from the Checkov scan results
     - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/module/results_cli.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/module/results_cli.txt
 
     # Run a security scan on the Terraform code using the Checkov tool.
     # Generate a report of security issues that were found.
@@ -229,13 +229,13 @@ jobs:
 
      # Strip out ANSI codes from the Checkov scan results
     - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./checkov/example/results_cli.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/example/results_cli.txt
 
     # Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
     - name: Check for changes in 'checkov/module' and 'checkov/example' directories
       id: check_changes
       run: |
-        if git status --porcelain './checkov/module' './checkov/example' | grep -q .; then
+        if git status --porcelain './scan-tools/checkov/module' './scan-tools/checkov/example' | grep -q .; then
           echo "Changes found in 'checkov/module' or 'checkov/example' directories."
           echo "::set-output name=changes::true"
         else
@@ -249,7 +249,7 @@ jobs:
       run: |
         git config --global user.email "actions@github.com"
         git config --global user.name "GitHub Action - terraform-module-scanner"
-        git add './checkov/module' './checkov/example'
+        git add './scan-tools/checkov/module' './checkov/example'
         git commit -m "Resulting from Checkov"
         git push
 
