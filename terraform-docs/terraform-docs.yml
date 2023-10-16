@@ -37,14 +37,14 @@ content: |-                     # Customize the outputted file
   The results of the most recent TFLint. If there is no data, then there are no issues logged.
 
   ```hcl
-  {{ include "tflint/tflint-results-module.txt" }}
+  {{ include "scan-tools/tflint/tflint-results-module.txt" }}
   ```
 
   # TFLint Results - example
   The results of the most recent TFLint. If there is no data, then there are no issues logged.
 
   ```hcl
-  {{ include "tflint/tflint-results-example.txt" }}  ```
+  {{ include "scan-tools/tflint/tflint-results-example.txt" }}  ```
 
   # Checkov Security Scan Results - module
   The results of the most recent Checkov security scan. If there is no data, then there are no issues logged.

@@ -62,7 +62,7 @@ jobs:
     steps:
     
     - name: Checkout the repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: main
          
@@ -146,11 +146,11 @@ jobs:
     - name: Execute TFLint and Store Results - module
       continue-on-error: true
       run: |
-        tflint --format default > "./tflint/tflint-results-module.txt" 2>&1
+        tflint --format default > "./scan-tools/tflint/tflint-results-module.txt" 2>&1
 
     # Strip out ANSI codes from the results file
     - name: Clean Results file - module
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-module.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-module.txt
 
     # Execute TFLInt against the ./example directory
     # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
@@ -158,35 +158,40 @@ jobs:
       continue-on-error: true
       run: |
        cd ./example
-        tflint --format default > "../tflint/tflint-results-example.txt" 2>&1
+        tflint --format default > "..//scan-tools/tflint/tflint-results-example.txt" 2>&1
     
     # Strip out ANSI codes from the results file
     - name: Clean Results file - example
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./tflint/tflint-results-example.txt
+      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-example.txt
 
-    # Check if there are changes in the 'tflint' directory before committing.
-    - name: Check for changes in 'tflint' directory
-      id: check_changes
-      run: |
-        cd ./tflint
-        if git status --porcelain | grep -q .; then
-          echo "Changes found in 'tflint' directory."
-          echo "::set-output name=changes::true"
-        else
-          echo "No changes found in 'tflint' directory."
-          echo "::set-output name=changes::false"
-        fi
+    - name: Auto-commit
+      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+      with:
+        commit_message: TFLint
 
-    # Commit the TFLint results file(s) to the repository only if changes were found.
-    - name: Commit TFLint Results
-      if: steps.check_changes.outputs.changes == 'true'
-      run: |
-        cd ./tflint
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Action - terraform-module-scanner"
-        git add .
-        git commit -m "Resulting from TFLint"
-        git push
+    ## Check if there are changes in the 'tflint' directory before committing.
+    #- name: Check for changes in 'tflint' directory
+    #  id: check_changes
+    #  run: |
+    #    cd ./tflint
+    #    if git status --porcelain | grep -q .; then
+    #      echo "Changes found in 'tflint' directory."
+    #      echo "::set-output name=changes::true"
+    #    else
+    #      echo "No changes found in 'tflint' directory."
+    #      echo "::set-output name=changes::false"
+    #    fi
+#
+    ## Commit the TFLint results file(s) to the repository only if changes were found.
+    #- name: Commit TFLint Results
+    #  if: steps.check_changes.outputs.changes == 'true'
+    #  run: |
+    #    cd ./tflint
+    #    git config --global user.email "actions@github.com"
+    #    git config --global user.name "GitHub Action - terraform-module-scanner"
+    #    git add .
+    #    git commit -m "Resulting from TFLint"
+    #    git push
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
@@ -236,27 +241,33 @@ jobs:
     - name: Clean Checkov Output
       run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/example/results_cli.txt
 
-    # Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
-    - name: Check for changes in 'checkov/module' and 'checkov/example' directories
-      id: check_changes
-      run: |
-        if git status --porcelain './scan-tools/checkov/module' './scan-tools/checkov/example' | grep -q .; then
-          echo "Changes found in 'checkov/module' or 'checkov/example' directories."
-          echo "::set-output name=changes::true"
-        else
-          echo "No changes found in 'checkov/module' or 'checkov/example' directories."
-          echo "::set-output name=changes::false"
-        fi
+    - name: Auto-commit
+      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+      with:
+        commit_message: Checkov
 
-     # Commit the changes to the repository only if changes were found.
-    - name: Commit Results
-      if: steps.check_changes.outputs.changes == 'true'
-      run: |
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Action - terraform-module-scanner"
-        git add './scan-tools/checkov/module' './scan-tools/checkov/example'
-        git commit -m "Resulting from Checkov"
-        git push
+
+    ## Check if there are changes in the 'checkov/module' and 'checkov/example' directories before committing.
+    #- name: Check for changes in 'checkov/module' and 'checkov/example' directories
+    #  id: check_changes
+    #  run: |
+    #    if git status --porcelain './scan-tools/checkov/module' './scan-tools/checkov/example' | grep -q .; then
+    #      echo "Changes found in 'checkov/module' or 'checkov/example' directories."
+    #      echo "::set-output name=changes::true"
+    #    else
+    #      echo "No changes found in 'checkov/module' or 'checkov/example' directories."
+    #      echo "::set-output name=changes::false"
+    #    fi
+#
+    # # Commit the changes to the repository only if changes were found.
+    #- name: Commit Results
+    #  if: steps.check_changes.outputs.changes == 'true'
+    #  run: |
+    #    git config --global user.email "actions@github.com"
+    #    git config --global user.name "GitHub Action - terraform-module-scanner"
+    #    git add './scan-tools/checkov/module' './scan-tools/checkov/example'
+    #    git commit -m "Resulting from Checkov"
+    #    git push
 
   ### ------------------------------------------ ###
   # Create README.md
@@ -313,4 +324,4 @@ jobs:
     - name: Auto-commit
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
-        commit_message: Terraform FMT & Validate
+        commit_message: Readme
