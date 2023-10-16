@@ -154,6 +154,7 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: TFLint
+        file_pattern: './scan-tools/tflint/*'
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
@@ -263,3 +264,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: Readme
+        file_pattern: 'README.md'
