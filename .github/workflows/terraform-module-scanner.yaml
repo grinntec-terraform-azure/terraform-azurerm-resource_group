@@ -180,7 +180,7 @@ jobs:
       with:
         file: ./main.tf
         output_format: cli # Report output format
-        output_file_path: ./.checkov/module/ # Name of the output folder to save the chosen output formats
+        output_file_path: ./checkov/module/ # Name of the output folder to save the chosen output formats
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
      # Strip out ANSI codes from the Checkov scan results
