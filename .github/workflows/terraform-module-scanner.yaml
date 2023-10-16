@@ -218,7 +218,7 @@ jobs:
       with:
         file: ./main.tf
         output_format: cli # Report output format
-        output_file_path: ./checkov/module/ # Name of the output folder to save the chosen output formats
+        output_file_path: ./scan-tools/checkov/module/ # Name of the output folder to save the chosen output formats
         #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
@@ -233,7 +233,7 @@ jobs:
       with:
         file: ./example/main.tf
         output_format: cli # Report output format
-        output_file_path: ./checkov/example/ # Name of the output folder to save the chosen output formats
+        output_file_path: ./scan-tools/checkov/example/ # Name of the output folder to save the chosen output formats
         #framework: terraform # Filter scan to run only on specific infrastructure code frameworks
         soft_fail: 'true' # Runs checks but always returns a 0 exit code    
 
@@ -298,7 +298,7 @@ jobs:
       uses: terraform-docs/gh-actions@v1.0.0
       with:
         # Specify the configuration file for 'terraform-docs'
-        config-file: ./terraform-docs/terraform-docs.yml
+        config-file: ./scan-tools/terraform-docs/terraform-docs.yml
         # Enable pushing the updated README.md back to the pull request branch
         git-push: "false"
     
