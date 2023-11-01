@@ -20,7 +20,6 @@
  * Note: Always ensure you're using the correct Terraform and provider versions before applying.
  */
 
-
 ############################################################
 # TERRAFORM CONFIGURATION
 ############################################################
@@ -45,42 +44,77 @@ terraform {
 # LOCALS
 ############################################################
 locals {
-  tags = {
-    app = var.app_name
-    env = var.environment
+  common_tags = {
+    appname    = var.app_name
+    uai        = var.uai
+    env        = var.environment
+    created_by = var.created_by
   }
-}
 
+  date_tags = {
+    created_date = timestamp()
+  }
+
+  common_name = "${var.uai}-${var.app_name}-${var.environment}"
+}
 
 ############################################################
 # RESOURCES
 ############################################################
 resource "azurerm_resource_group" "this" {
-  name     = "rg-${var.app_name}-${var.environment}"
+  name     = "${local.common_name}-rg"
   location = var.location
-  tags     = local.tags
+  tags     = merge(local.common_tags, local.date_tags)
+  lifecycle {
+    ignore_changes = [tags["created_date"]]
+  }
+}
+
+resource "azurerm_management_lock" "this" {
+  count      = var.enable_lock ? 1 : 0
+  name       = "${azurerm_resource_group.this.name}-lock"
+  scope      = azurerm_resource_group.this.id
+  lock_level = "CanNotDelete"
+  notes      = "Locking the resource group to prevent accidental deletion to all the resources within"
 }
 
 
 ############################################################
 # VARIABLES
 ############################################################
+// These are considered default variables required for most resources in Azure
+variable "azure_subscription_id" {
+  description = "Azure Subscription ID for the network. It should be in a valid GUID format."
+  type        = string
 
-# Common variables
-variable "location" {
+  validation {
+    condition     = can(regex("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$", var.azure_subscription_id))
+    error_message = "The Azure Subscription ID must be in a valid GUID format (e.g., 12345678-1234-1234-1234-123456789012)."
+  }
+}
+
+variable "app_name" {
   type        = string
   description = <<EOT
-  (Required) Location of where the workload will be managed.
+  (Required) Name of the workload. It must start with a letter and end with a letter or number.
 
-  Options:
-  - westeurope
-  - eastus
-  - southeastasia
+  Example:
+  - applicationx
   EOT
 
   validation {
-    condition     = can(regex("^westeurope$|^eastus$|^southeastasia$", var.location))
-    error_message = "Location is invalid. Options are 'westeurope', 'eastus', or 'southeastasia'"
+    condition     = length(var.app_name) <= 90 && can(regex("^[a-zA-Z].*[a-zA-Z0-9]$", var.app_name))
+    error_message = "app_name is invalid. 'app_name' must be between 1 and 90 characters, start with a letter, and end with a letter or number."
+  }
+}
+
+variable "uai" {
+  description = "Unique Application Identifier (UAI) of the application. The UAI format must be 'uai' followed by 7 digits (e.g., uai3033130)."
+  type        = string
+
+  validation {
+    condition     = can(regex("^uai[0-9]{7}$", var.uai))
+    error_message = "The UAI must start with 'uai' and be followed by 7 digits."
   }
 }
 
@@ -96,24 +130,48 @@ variable "environment" {
   EOT
 
   validation {
-    condition     = can(regex("^dev$|^test$|^prod$", var.environment))
+    condition     = can(regex("^(dev|test|prod)$", var.environment))
     error_message = "Environment is invalid. Valid options are 'dev', 'test', or 'prod'."
   }
 }
 
-variable "app_name" {
+variable "location" {
   type        = string
   description = <<EOT
-  (Required) Name of the workload.
+  (Required) Location of where the workload will be managed.
 
-  Example:
-  - applicationx
+  Options:
+  - westeurope
+  - eastus
+  - southeastasia
   EOT
 
   validation {
-    condition     = length(var.app_name) <= 90 && can(regex("^[a-zA-Z].*[a-zA-Z0-9]$", var.app_name))
-    error_message = "app_name is invalid. 'app_name' must be between 1 and 90 characters, start with a letter, and end with a letter or number."
+    condition     = can(regex("^(westeurope|eastus|southeastasia)$", var.location))
+    error_message = "Location is invalid. Options are 'westeurope', 'eastus', or 'southeastasia'."
   }
+}
+
+variable "created_by" {
+  type        = string
+  description = <<EOT
+  (Required) The Single Sign-On (SSO) ID of the person creating this resource. 
+  The SSO ID must be a 9-digit numerical value.
+  
+  Example:
+  - 123456789
+  EOT
+
+  validation {
+    condition     = can(regex("^[0-9]{9}$", var.created_by))
+    error_message = "The SSO ID is invalid. It must be a 9-digit numerical value."
+  }
+}
+
+variable "enable_lock" {
+  type        = bool
+  description = "Enable or disable a lock on the resource group"
+  default     = false
 }
 
 
