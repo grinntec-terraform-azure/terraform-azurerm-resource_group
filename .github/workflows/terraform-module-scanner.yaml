@@ -9,83 +9,79 @@
 # - Checks Code using TFLInt
 # - Scans for security issues using CHECKOV
 # - Creates/updates README.md using Terraform Docs
-# - Sends a Slack message if any of the steps fail or if successful
-
 name: 'Terraform Module Scanner'
 
-# This workflow is triggered by manual dispatch, pull requests, and pushes to the 'main' branch.
-# However, it ignores any changes made within the '.github/workflows/' directory.
 on:
-  # Allows manual triggering of the workflow from the GitHub Actions UI.
-  workflow_dispatch:
-  
-  # Triggers the workflow for any pull request.
   pull_request:
-  
-  # Triggers the workflow for pushes.
+  workflow_dispatch:
   push:
-    # Specifies that the workflow should only run for pushes to the 'main' branch.
     branches:
       - main
-      
-    # Exclude paths: The workflow won't run if only these paths are modified in a push.
-    #paths-ignore:
-    #  - '.github/workflows/**'
-
-env:
-  SLACK_CHANNEL_ID: 'C060DK2BWQM' # Define the Slack channel ID here
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # An automatically generated secret provided by GitHub for use in GitHub Actions.
+    paths-ignore:
+      - '.github/workflows/**'
 
 jobs:
 
-#### ------------------------------------------ ###
-## TERRAFORM FMT & VALIDATE
-#### ------------------------------------------ ###
-# This step is responsible for initializing, formatting, and validating the Terraform code.
-# 
-# 1. `terraform init -backend=false`: 
-#    - Initializes the Terraform working directory.
-#    - Downloads the required provider plugins.
-#    - The `-backend=false` option disables backend configuration, which means Terraform will use a local backend.
-#      This means the Terraform state will be stored on the runner machine where the workflow is executed.
+### ------------------------------------------ ###
+# TERRAFORM FMT & VALIDATE
+### ------------------------------------------ ###
+# Set up the Terraform environment on the runner machine and
+# validate the Terraform code to ensure that it is ready for 
+# further deployment or management of infrastructure resources
 #
-# 2. `terraform fmt`: 
-#    - Automatically formats the Terraform code to adhere to a canonical format and style.
-#
-# 3. `terraform validate`: 
-#    - Validates the Terraform code's syntax and checks for any errors.
-# If the terraform validate command fails, subsequent steps in the workflow will not execute.
+# If the terraform validate command fails, subsequent steps in
+# the workflow will not execute.
 
   terraform-fmt-validate:
     name: 'Terraform FMT & Validate'
     runs-on: ubuntu-latest
+    
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
     
+  ## Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: main
-         
+  
+  ## Pull any changes down to the working directory      
+    - name: Pull latest changes
+      run: |
+        git pull origin main
+        
+  ## Install Terraform CLI on the runner machine
     - name: Setup Terraform on the runner
       uses: hashicorp/setup-terraform@v2.0.3
 
-    - name: Terraform init, fmt, & validate - module
-      run: |
-        terraform init -backend=false
-        terraform fmt
-        terraform validate
-
-    - name: Terraform init, fmt, & validate - ./example/main.tf
-      run: |
-        cd ./example
-        terraform init -backend=false
-        terraform fmt
-        terraform validate
-
-    - name: Auto-commit
-      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+  # Initializes the Terraform working directory by downloading the required provider plugins and modules.
+  # Configures the backend to store the Terraform state.
+  # The -backend=false option disables the backend configuration and instructs Terraform to use a local backend.
+  # The Terraform state will be stored on the runner machine where the workflow is executed.
+  # Runs the fmt command to align the code correctly
+  # Runs validate to check the code for syntax errors
+    - name: Terraform init, fmt, & validate
+      run: terraform init -backend=false; terraform fmt; terraform validate
+      
+  ## Commit the results to a sub-folder in the repository
+    - name: Commit any changes to this repository
+      uses: EndBug/add-and-commit@v9.1.1
       with:
-        commit_message: Terraform FMT & Validate
+        add: '.'
+        author_name: 'GitHub Action - terraform-module-scanner'
+        message: 'Resulting from Terraform init, fmt, & validate'    
+
+  ## Push changes to the main branch.
+  ## Requires authentication, which is provided through a GITHUB_TOKEN 
+  ## environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
+      with:
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
 
 ### ------------------------------------------ ###
 # TFLint
@@ -94,67 +90,55 @@ jobs:
   tflint:
     name: 'TFLint'
     runs-on: ubuntu-latest
-    needs: [terraform-fmt-validate]
+    needs: [terraform-fmt-validate] # Ensure it runs after your other Terraform steps
+    
     steps:
-
+    # Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: main
 
-    # Caching TFLint plugins to optimize workflow execution time.
-    # This action leverages GitHub's caching infrastructure to store and retrieve TFLint plugins.
-    # The cache is not stored on the ephemeral runner but in GitHub's centralized cache storage.
-    # The key for the cache is constructed using the runner's OS and a hash of the '.tflint.hcl' file.
-    # A change in the '.tflint.hcl' file will generate a new cache, ensuring relevant plugins are used.
-    - name: Setup TFLint cache
-      uses: actions/cache@v3
+  # Cache TFLint plugins
+    - uses: actions/cache@v3
       with:
         path: ~/.tflint.d/plugins
         key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
-    # Set up and install the specified version of TFLint
-    - name: Install TFLint v0.44.1
+  # Install TFLint
+    - name: Setup TFLint
       uses: terraform-linters/setup-tflint@v3
       with:
         tflint_version: v0.44.1
 
-    # Set up TFLint plugins using the provided configuration file.
-    # The '--init' flag initializes the plugins, and the '--config' flag specifies the configuration file path.
-    # The tflint.hcl patch is relative to the repository where the action is run
-    # The tflint.hcl file can be changed according to what you're linting
-    # By default it'll have the azure and aws libraries
-    - name: Initialize TFLint Plugins
-      run: tflint --init --config ./scan-tools/tflint/tflint.hcl
+    # Initialize TFLint plugins
+    - name: Init TFLint
+      run: tflint --init --config ./tflint/tflint.hcl
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Execute TFLInt against the ./ directory
-    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
-    - name: Execute TFLint and Store Results - module
+  # Ensure the tflint/ directory exists
+    - name: Create tflint directory if it doesn't exist
+      run: mkdir -p tflint
+
+    # Run TFLint and save results to a date-stamped file in the tflint/ directory
+    - name: Run TFLint and save results
       continue-on-error: true
       run: |
-        tflint --format default > "./scan-tools/tflint/tflint-results-module.txt" 2>&1
+        # Run tflint without redirection to see any error messages
+        tflint -f compact --config ./tflint/tflint.hcl || true
+      
+        # If the above command succeeds, then save the results to a file
+        TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
+        tflint -f compact --config ./tflint/tflint.hcl > tflint/tflint-results-$TIMESTAMP.txt
 
-    # Strip out ANSI codes from the results file
-    - name: Clean Results file - module
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-module.txt
-
-    # Execute TFLInt against the ./example directory
-    # Uses 2>&1 to redirect both standard output (stdout) and standard error (stderr) to the same file.
-    - name: Execute TFLint and Store Results - example
-      continue-on-error: true
-      run: |
-       cd ./example
-        tflint --format default > "../scan-tools/tflint/tflint-results-example.txt" 2>&1
-    
-    # Strip out ANSI codes from the results file
-    - name: Clean Results file - example
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/tflint/tflint-results-example.txt
-
-    - name: Auto-commit
-      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+  # Commit the TFLint results to the repository
+    - name: Commit TFLint results to the repository
+      uses: EndBug/add-and-commit@v9.1.1
       with:
-        commit_message: TFLint
-        file_pattern: '/scan-tools/tflint/*'
+        add: './tflint/tflint-results-*.txt'
+        author_name: 'terraform-module-scanner'
+        message: 'TFLint results'
 
 ### ------------------------------------------ ###
 # CHECKOV SECURITY SCAN
@@ -162,132 +146,97 @@ jobs:
 # Run a security scan on the Terraform code using the Checkov tool.
 # Commit the results to the repository.
 
-  checkov:
+  checkov-security-scan:
     name: 'Checkov Security Scan'
     runs-on: ubuntu-latest
-    needs: [tflint]
+    needs: [terraform-fmt-validate,TFLint]
+#    
+# Required to access the repository and perform Git operations.
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
     
-    # Check out the code to the runner environment where the workflow is running
+# Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: main
-
-    # Check if 'results_cli.txt' exists in '/scan-tools/checkov/module/' and create it if not
-    - name: Ensure '/scan-tools/checkov/module/results_cli.txt' exists
+  
+# Pull any changes down to the working directory      
+    - name: Pull latest changes
       run: |
-        DIR_PATH="${GITHUB_WORKSPACE}/scan-tools/checkov/module/"
-        FILE_PATH="${DIR_PATH}results_cli.txt"
-        mkdir -p "$DIR_PATH"        
-        if [[ ! -f "$FILE_PATH" ]]; then
-          touch "$FILE_PATH"
-          echo "'filea' created in '/scan-tools/checkov/module/'"
-        else
-          echo "'filea' already exists in '/scan-tools/checkov/module/'"
-        fi
+        git pull origin main
 
-    # Check if 'results_cli.txt' exists in '/scan-tools/checkov/example/' and create it if not
-    - name: Ensure './scan-tools/checkov/example/results_cli.txt' exists
-      run: |
-        DIR_PATH="${GITHUB_WORKSPACE}/scan-tools/checkov/example/"
-        FILE_PATH="${DIR_PATH}results_cli.txt"
-        mkdir -p "$DIR_PATH"        
-        if [[ ! -f "$FILE_PATH" ]]; then
-          touch "$FILE_PATH"
-          echo "'filea' created in '/scan-tools/checkov/example/'"
-        else
-          echo "'filea' already exists in '/scan-tools/checkov/example/'"
-        fi
+# Ensure the checkov/ directory exists
+    - name: Create checkov directory if it doesn't exist
+      run: mkdir -p checkov
 
-    # Run a security scan on the Terraform code using the Checkov tool.
-    # Generate a report of security issues that were found.
-    - name: Run Checkov Scan - module
+# Generate the timestamped file path for the Checkov scan results
+    - name: Generate Checkov output file path
+      run: echo "CHECKOV_OUTPUT_FILE=./checkov/checkov-security-scan-$(date "+%Y%m%d-%H%M%S")" >> $GITHUB_ENV
+
+# Run a security scan on the Terraform code using the Checkov tool.
+# Generate a report of security issues that were found.
+    - name: Run Checkov Scan
       uses: bridgecrewio/checkov-action@master
       with:
-        file: ./main.tf
-        output_format: cli # Report output format
-        output_file_path: ./scan-tools/checkov/module/ # Name of the output folder to save the chosen output formats
-        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
+        directory: ./
+        framework: terraform
+        output_format: cli
+        output_file_path: ${{ env.CHECKOV_OUTPUT_FILE }}
+        soft_fail: 'true'
+        skip_check: 'CKV_TF_1' # Skips failing on using ?ref=0.0.1 instead of commit hash as module source
+        compact: 'true'
 
-     # Strip out ANSI codes from the Checkov scan results
-    - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/module/results_cli.txt
-
-    # Run a security scan on the Terraform code using the Checkov tool.
-    # Generate a report of security issues that were found.
-    - name: Run Checkov Scan - example
-      uses: bridgecrewio/checkov-action@master
+# Add the Checkov scan report to the repository and commit it with a commit message.
+# This action requires authentication, which is provided through GITHUB_TOKEN.
+    - name: Commit the results to this repository
+      uses: EndBug/add-and-commit@v9.1.1
       with:
-        file: ./example/main.tf
-        output_format: cli # Report output format
-        output_file_path: ./scan-tools/checkov/example/ # Name of the output folder to save the chosen output formats
-        soft_fail: 'true' # Runs checks but always returns a 0 exit code    
+        add: './checkov/checkov-security-scan-*.txt'
+        author_name: 'Neil Grinnall'
+        message: 'Checkov results'
 
-     # Strip out ANSI codes from the Checkov scan results
-    - name: Clean Checkov Output
-      run: sed -i 's/\x1b\[[0-9;]*m//g' ./scan-tools/checkov/example/results_cli.txt
-
-    - name: Auto-commit
-      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+# Push changes to the main branch.
+# Requires authentication, which is provided through a GITHUB_TOKEN environment variable.
+    - name: Push changes to main branch
+      uses: ad-m/github-push-action@master
       with:
-        commit_message: Checkov
-        file_pattern: './scan-tools/checkov/*'
+        branch: main
+        directory: ./
+        github_token: ${{ env.GITHUB_TOKEN }}
 
-  ### ------------------------------------------ ###
-  # Create README.md
-  ### ------------------------------------------ ###
-  create-readme:
-    name: 'Create Readme'
+### ------------------------------------------ ###
+# TERRAFORM-DOCS
+### ------------------------------------------ ###
+# Automatically generate and update documentation for Terraform
+# modules in the README.md file, and push the changes back to 
+# the pull request branch in GitHub.
+
+  terraform-docs:
+    name: 'Terraform Docs'
     runs-on: ubuntu-latest
-    needs: [checkov]
+    needs: checkov-security-scan
+    
     steps:
-
-    # Check out the code to the runner environment where the workflow is running
+    
+  # Check out the code to the runner environment where the workflow is running
     - name: Checkout the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
       with:
         ref: main
-
-    # Check and if not-exist create a README.md file with the specified content
-    - name: Check and Create README.md
+  
+  # Pull any changes down to the working directory      
+    - name: Pull latest changes
       run: |
-        if [[ ! -f README.md ]]; then
-          echo "" > README.md
-        fi
-    
-     # Use the 'terraform-docs' GitHub Action to automatically generate and insert Terraform documentation
-     # into the README.md file.
-     # Once the documentation is updated, the changes are pushed back to the pull request branch.
-    - name: Generate and Update Terraform Documentation in README.md
+        git pull origin main
+
+  # Render terraform docs inside the README.md and push changes back to PR branch
+    - name: Create or update readme.md file
       uses: terraform-docs/gh-actions@v1.0.0
       with:
-        # Specify the configuration file for 'terraform-docs'
-        config-file: ./scan-tools/terraform-docs/terraform-docs.yml
-        # Enable pushing the updated README.md back to the pull request branch
-        git-push: "false"
-    
-    # Fetch all tags from the remote repository.
-    # This ensures that the local repository has an up-to-date list of all tags available in the remote.
-    - name: Fetch All Tags from Remote
-      run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-      
-    # Retrieve the latest tag from the git history.
-    # This step uses the 'git describe' command to identify the most recent tag and sets it as an output
-    # variable for subsequent steps.
-    - name: Retrieve Latest Git Tag
-      id: latesttag
-      run: echo ::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))
-
-    # Update the README.md file to reflect the latest git tag.
-    # This step uses the 'sed' command to search for the badge URL pattern in the README.md and replaces
-    # it with the latest tag obtained from the previous step.
-    - name: Update Badge in readme with Git Tag
-      run: |
-        sed -i "s/\(https:\/\/img.shields.io\/badge\/Tag\)-.*-blue/\1-${{ steps.latesttag.outputs.tag }}-blue/" README.md
-
-    - name: Auto-commit
-      uses: stefanzweifel/git-auto-commit-action@v5.0.0
-      with:
-        commit_message: Readme
-        file_pattern: 'README.md'
+        #config-file: .terraform-docs.yml
+        config-file: ./terraform-docs/terraform-docs.yml
+        git-push: "true"
+  
